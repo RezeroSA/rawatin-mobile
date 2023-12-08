@@ -38,6 +38,11 @@ dependencies:
   intl_phone_field: ^3.2.0
   pinput: ^3.0.1
   url_launcher: ^6.1.14
+  intl: ^0.18.1
+  local_auth: ^2.1.7
+  font_awesome_flutter: ^10.6.0
+  country_flags: ^2.2.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

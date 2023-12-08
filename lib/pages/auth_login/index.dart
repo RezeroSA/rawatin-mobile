@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:rawatin/pages/home/index.dart';
 import 'package:rawatin/pages/register/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
@@ -67,7 +68,13 @@ class AuthLogin extends StatelessWidget {
                 },
                 pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                 showCursor: true,
-                onCompleted: (pin) => print(pin),
+                onCompleted: (pin) => (
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (_) => const Home(),
+                    ),
+                  ),
+                ),
               ),
             ),
             RichText(

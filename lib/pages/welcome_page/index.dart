@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rawatin/components/top_logo.dart';
-import 'package:rawatin/pages/login/login.dart';
+import 'package:rawatin/pages/login/index.dart';
 import 'package:rawatin/pages/register/index.dart';
 import 'package:rawatin/utils/utils.dart';
 

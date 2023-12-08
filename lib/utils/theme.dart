@@ -8,6 +8,7 @@ class RawatinColorTheme {
   static const Color secondaryOrange = Color(0xFFFFF1E5);
   static const Color red = Color(0xFFFF0707);
   static const Color grey = Color(0xFF4B4B4B);
+  static const Color secondaryGrey = Color.fromARGB(255, 202, 199, 199);
 
   // Primary Text Theme
   static TextTheme primaryTextTheme = TextTheme(
