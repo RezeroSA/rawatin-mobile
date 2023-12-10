@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rawatin/pages/cuci_mobil/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class HomePage extends StatelessWidget {
@@ -99,13 +100,19 @@ class HomePage extends StatelessWidget {
           final service = services[index];
           final icon = icons[index];
 
-          return buildNumber(item, service, icon);
+          return buildNumber(context, item, service, icon);
         },
       );
 
-  Widget buildNumber(String number, String service, IconData icon) =>
+  Widget buildNumber(context, String number, String service, IconData icon) =>
       ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (_) => const CuciMobil(),
+            ),
+          );
+        },
         style: ElevatedButton.styleFrom(
             backgroundColor: RawatinColorTheme.secondaryOrange,
             shadowColor: Colors.transparent,
@@ -155,7 +162,6 @@ class HomePage extends StatelessWidget {
             ),
             Text(
               service,
-              // 'Cuci Mobil',
               style: const TextStyle(
                   fontSize: 17,
                   fontFamily: 'Arial Rounded',

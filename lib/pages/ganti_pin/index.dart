@@ -49,48 +49,50 @@ class _GantiPinState extends State<GantiPin> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.02,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Image(image: AssetsLocation.imageLocation('otp')),
               ),
-              child: Image(image: AssetsLocation.imageLocation('otp')),
-            ),
-            const Text(
-              'Masukkin PIN lama kamu',
-              textAlign: TextAlign.center,
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.03,
-                bottom: MediaQuery.of(context).size.height * 0.02,
+              const Text(
+                'Masukkin PIN lama kamu',
+                textAlign: TextAlign.center,
               ),
-              child: Pinput(
-                length: 6,
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: focusedPinTheme,
-                validator: (s) {
-                  if (s == '222222') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const NewPin()),
-                    );
-                  } else {
-                    'Pin is incorrect';
-                  }
-                },
-                pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                showCursor: true,
-                onCompleted: (pin) => print(pin),
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.03,
+                  bottom: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Pinput(
+                  length: 6,
+                  defaultPinTheme: defaultPinTheme,
+                  focusedPinTheme: focusedPinTheme,
+                  validator: (s) {
+                    if (s == '222222') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NewPin()),
+                      );
+                    } else {
+                      'Pin is incorrect';
+                    }
+                  },
+                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                  showCursor: true,
+                  onCompleted: (pin) => print(pin),
+                ),
               ),
-            ),
-            const SizedBox(
-              child: Padding(padding: EdgeInsets.fromLTRB(0, 130, 0, 130)),
-            ),
-          ],
+              const SizedBox(
+                child: Padding(padding: EdgeInsets.fromLTRB(0, 130, 0, 130)),
+              ),
+            ],
+          ),
         ),
       ),
     );
