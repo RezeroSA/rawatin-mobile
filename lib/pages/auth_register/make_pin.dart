@@ -48,58 +48,60 @@ class _MakePinState extends State<MakePin> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.02,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Image(image: AssetsLocation.imageLocation('otp')),
               ),
-              child: Image(image: AssetsLocation.imageLocation('otp')),
-            ),
-            const Text(
-              'PIN akan digunakan setiap kamu login dan melakukan transaksi',
-              textAlign: TextAlign.center,
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.03,
-                bottom: MediaQuery.of(context).size.height * 0.02,
+              const Text(
+                'PIN akan digunakan setiap kamu login dan melakukan transaksi',
+                textAlign: TextAlign.center,
               ),
-              child: Pinput(
-                length: 6,
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: focusedPinTheme,
-                validator: (s) {
-                  if (s == '222222') {
-                    _autentikasiBiometrik(context);
-                  } else {
-                    'Pin is incorrect';
-                  }
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.03,
+                  bottom: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Pinput(
+                  length: 6,
+                  defaultPinTheme: defaultPinTheme,
+                  focusedPinTheme: focusedPinTheme,
+                  validator: (s) {
+                    if (s == '222222') {
+                      _autentikasiBiometrik(context);
+                    } else {
+                      'Pin is incorrect';
+                    }
+                  },
+                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                  showCursor: true,
+                  onCompleted: (pin) => print(pin),
+                ),
+              ),
+              const SizedBox(
+                child: Padding(padding: EdgeInsets.fromLTRB(0, 130, 0, 130)),
+              ),
+              TextButton(
+                onPressed: () {
+                  _autentikasiBiometrik(context);
                 },
-                pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                showCursor: true,
-                onCompleted: (pin) => print(pin),
+                style: TextButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  backgroundColor: RawatinColorTheme.orange,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                child: Text('Lanjut',
+                    style: RawatinColorTheme.secondaryTextTheme.titleSmall),
               ),
-            ),
-            const SizedBox(
-              child: Padding(padding: EdgeInsets.fromLTRB(0, 130, 0, 130)),
-            ),
-            TextButton(
-              onPressed: () {
-                _autentikasiBiometrik(context);
-              },
-              style: TextButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-                backgroundColor: RawatinColorTheme.orange,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-              ),
-              child: Text('Lanjut',
-                  style: RawatinColorTheme.secondaryTextTheme.titleSmall),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

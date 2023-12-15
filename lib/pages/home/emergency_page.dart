@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rawatin/pages/emergency_order/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class EmergencyPage extends StatelessWidget {
@@ -32,7 +33,13 @@ class EmergencyPage extends StatelessWidget {
                 child: Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (_) => const EmergencyOrder(),
+                    ),
+                  );
+                },
                 icon: Image(
                   image: AssetsLocation.imageLocation('emergency'),
                 ),

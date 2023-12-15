@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rawatin/pages/auth_register/index.dart';
+import 'package:rawatin/pages/buat_pesanan/index.dart';
 import 'package:rawatin/pages/cari_alamat/index.dart';
 import 'package:rawatin/pages/order_page/index.dart';
+import 'package:rawatin/pages/payment_method/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class CuciMobil extends StatefulWidget {
@@ -566,7 +567,7 @@ class _CuciMobilState extends State<CuciMobil> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 15),
+                        margin: const EdgeInsets.only(top: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -584,10 +585,17 @@ class _CuciMobilState extends State<CuciMobil> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PaymentMethod()),
+                                );
+                              },
                               style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
-                                  minimumSize: Size(50, 30),
+                                  minimumSize: const Size(50, 30),
                                   tapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   alignment: Alignment.centerLeft),
@@ -620,7 +628,7 @@ class _CuciMobilState extends State<CuciMobil> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AuthRegister()),
+                        builder: (context) => const BuatPesanan()),
                   );
                 },
                 style: TextButton.styleFrom(
