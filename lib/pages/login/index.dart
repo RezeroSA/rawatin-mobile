@@ -11,6 +11,7 @@ class Login extends StatelessWidget {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
+        surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
       ),
       body: SingleChildScrollView(

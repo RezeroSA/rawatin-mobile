@@ -23,6 +23,7 @@ class _RegisterFormState extends State<RegisterForm> {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
+        surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         centerTitle: true,
       ),

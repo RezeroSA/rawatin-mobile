@@ -31,6 +31,7 @@ class AuthRegister extends StatelessWidget {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
+        surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         title: const Text(
           'Verifikasi OTP',
@@ -41,66 +42,68 @@ class AuthRegister extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        child: Column(
-          children: [
-            const Text(
-              'Kami sudah mengirimkan kode One Time Password ke nomor +62 8xx xxxx xxxx',
-              textAlign: TextAlign.center,
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.02,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+          child: Column(
+            children: [
+              const Text(
+                'Kami sudah mengirimkan kode One Time Password ke nomor +62 8xx xxxx xxxx',
+                textAlign: TextAlign.center,
               ),
-              child: Image(image: AssetsLocation.imageLocation('otp')),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.03,
-                bottom: MediaQuery.of(context).size.height * 0.02,
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Image(image: AssetsLocation.imageLocation('otp')),
               ),
-              child: Pinput(
-                defaultPinTheme: defaultPinTheme,
-                focusedPinTheme: focusedPinTheme,
-                validator: (s) {
-                  if (s == '2222') {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterForm()),
-                    );
-                  } else {
-                    'Pin is incorrect';
-                  }
-                  // return s == '2222'
-                  //     ? Navigator.push(context, route)
-                  //     : 'Pin is incorrect';
-                },
-                pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                showCursor: true,
-                onCompleted: (pin) => print(pin),
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.03,
+                  bottom: MediaQuery.of(context).size.height * 0.02,
+                ),
+                child: Pinput(
+                  defaultPinTheme: defaultPinTheme,
+                  focusedPinTheme: focusedPinTheme,
+                  validator: (s) {
+                    if (s == '2222') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterForm()),
+                      );
+                    } else {
+                      'Pin is incorrect';
+                    }
+                    // return s == '2222'
+                    //     ? Navigator.push(context, route)
+                    //     : 'Pin is incorrect';
+                  },
+                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                  showCursor: true,
+                  onCompleted: (pin) => print(pin),
+                ),
               ),
-            ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    style: TextStyle(color: RawatinColorTheme.black),
-                    text: 'Tidak menerima OTP? ',
-                  ),
-                  TextSpan(
-                    style: const TextStyle(
-                        color: RawatinColorTheme.orange,
-                        fontFamily: 'Arial Rounded'),
-                    text: 'Kirim ulang OTP',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => _showDialog(context),
-                  ),
-                ],
-              ),
-            )
-          ],
+              RichText(
+                text: TextSpan(
+                  children: [
+                    const TextSpan(
+                      style: TextStyle(color: RawatinColorTheme.black),
+                      text: 'Tidak menerima OTP? ',
+                    ),
+                    TextSpan(
+                      style: const TextStyle(
+                          color: RawatinColorTheme.orange,
+                          fontFamily: 'Arial Rounded'),
+                      text: 'Kirim ulang OTP',
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => _showDialog(context),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

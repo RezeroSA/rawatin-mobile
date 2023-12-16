@@ -34,6 +34,7 @@ class _MakePinState extends State<MakePin> {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
+        surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         title: const Text(
           'Buat PIN Kamu',
@@ -117,7 +118,7 @@ _autentikasiBiometrik(context) {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(35.0)),
               child: Container(
-                constraints: const BoxConstraints(maxHeight: 550),
+                constraints: const BoxConstraints(maxHeight: 500),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                   child: Column(
