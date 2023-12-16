@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -14,11 +13,6 @@ class PesananSelesaiDarurat extends StatefulWidget {
 }
 
 class _PesananSelesaiDaruratState extends State<PesananSelesaiDarurat> {
-  static const LatLng _initialCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
-  static const LatLng _uibCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

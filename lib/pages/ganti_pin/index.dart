@@ -1,12 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rawatin/pages/ganti_pin/new_pin.dart';
-import 'package:rawatin/pages/home/index.dart';
-import 'package:rawatin/pages/register/index.dart';
-import 'package:rawatin/pages/welcome_page/index.dart';
-import 'package:rawatin/utils/local_auth.dart';
 import 'package:rawatin/utils/utils.dart';
 
 final defaultPinTheme = PinTheme(
@@ -82,6 +76,7 @@ class _GantiPinState extends State<GantiPin> {
                     } else {
                       'Pin is incorrect';
                     }
+                    ();
                   },
                   pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                   showCursor: true,

@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:rawatin/pages/buat_pesanan/index.dart';
-import 'package:rawatin/pages/cari_alamat/index.dart';
-import 'package:rawatin/pages/order_page/index.dart';
-import 'package:rawatin/pages/payment_method/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class OrderDetail extends StatefulWidget {
@@ -16,10 +11,6 @@ class OrderDetail extends StatefulWidget {
 }
 
 class _OrderDetailState extends State<OrderDetail> {
-  static const LatLng _initialCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
-  static const LatLng _uibCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

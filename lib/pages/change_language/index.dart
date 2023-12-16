@@ -1,11 +1,6 @@
 import 'package:country_flags/country_flags.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
-import 'package:rawatin/pages/ganti_pin/index.dart';
 import 'package:rawatin/pages/home/index.dart';
-import 'package:rawatin/pages/register/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class ChangeLanguage extends StatelessWidget {

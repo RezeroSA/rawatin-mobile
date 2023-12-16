@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:rawatin/pages/auth_register/index.dart';
 import 'package:rawatin/pages/auth_register/make_pin.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:intl/intl.dart';

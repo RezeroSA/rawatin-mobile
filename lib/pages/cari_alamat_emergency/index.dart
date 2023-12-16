@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rawatin/pages/cari_alamat/peta.dart';
 import 'package:rawatin/pages/cari_alamat_emergency/peta_darurat.dart';
 import 'package:rawatin/utils/utils.dart';
 

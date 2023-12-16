@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rawatin/pages/splashscreen/splashscreen.dart';
-import 'package:rawatin/pages/welcome_page/index.dart';
-import 'package:rawatin/utils/utils.dart';
 
 void main() {
   runApp(const MyApp());

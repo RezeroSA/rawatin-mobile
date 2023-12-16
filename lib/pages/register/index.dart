@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rawatin/pages/auth_register/index.dart';
-import 'package:rawatin/pages/login/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class Register extends StatelessWidget {
