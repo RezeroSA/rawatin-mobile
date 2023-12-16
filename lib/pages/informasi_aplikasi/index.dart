@@ -70,37 +70,37 @@ class InformasiAplikasi extends StatelessWidget {
                   const Column(
                     children: [
                       Text(
-                        'Sandy Alferro Dion👑 - 2131080',
+                        'Sandy Alferro Dion - 2131080',
                         style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'Alika Naziera Wardani👸🏻 - 2131080',
+                        'Alika Naziera Wardani - 2131080',
                         style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'Nurhikmah Ibrahim🙇🏻‍♀️ - 204855091',
+                        'Nurhikmah Ibrahim - 204855091',
                         style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'Philander Alvando Davian🙇🏻‍♂️ - 2131103',
+                        'Philander Alvando Davian - 2131103',
                         style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'Ricky Fernando🙇🏻‍♂️ - 2131057',
+                        'Ricky Fernando - 2131057',
                         style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
                       Text(
-                        'Andrian Muhammad Ramdhan🙇🏻‍♂️ - 21573008',
+                        'Andrian Muhammad Ramdhan - 21573008',
                         style: TextStyle(
                           fontSize: 15,
                         ),
