@@ -13,14 +13,14 @@ class LocalAuth {
       if (!await _canAuthenticate()) return false;
 
       return await _auth.authenticate(
-          localizedReason: 'Please authenticate to show account balance',
+          localizedReason: 'Harap autentikasi untuk melanjutkan',
           authMessages: const <AuthMessages>[
             AndroidAuthMessages(
-              signInTitle: 'Oops! Biometric authentication required!',
-              cancelButton: 'No thanks',
+              signInTitle: 'Otentikasi biometrik diperlukan',
+              cancelButton: 'Tidak, Terima kasih',
             ),
             IOSAuthMessages(
-              cancelButton: 'No thanks',
+              cancelButton: 'Tidak, Terima kasih',
             ),
           ],
           options: const AuthenticationOptions(

@@ -50,6 +50,20 @@ dependencies:
   flutter_dash: ^1.0.0
   image_picker: ^1.0.5
   dotted_border: ^2.1.0
+  dio: ^5.4.1
+  provider: ^6.1.2
+  status_alert: ^1.0.1
+  get: ^4.6.6
+  quickalert: ^1.1.0
+  get_storage: ^2.1.1
+  geolocator: ^11.0.0
+  skeletonizer: ^1.0.1
+  geocoding: ^3.0.0
+  money_formatter: ^0.0.5
+  art_sweetalert: ^0.0.5
+  loading_animation_widget: ^1.2.1
+  typing_text: ^1.0.4
+  flutter_animarker: ^3.2.0
 
 dev_dependencies:
   flutter_test:

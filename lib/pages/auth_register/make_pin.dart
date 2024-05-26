@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rawatin/pages/home/index.dart';
+import 'package:rawatin/service/Authentication.dart';
 import 'package:rawatin/utils/local_auth.dart';
 import 'package:rawatin/utils/utils.dart';
 
@@ -22,13 +24,26 @@ final focusedPinTheme = defaultPinTheme.copyDecorationWith(
 );
 
 class MakePin extends StatefulWidget {
-  const MakePin({super.key});
+  final String phoneNum;
+  final String nama;
+  final String email;
+  final String birthDate;
+
+  const MakePin(
+      {super.key,
+      required this.phoneNum,
+      required this.nama,
+      required this.email,
+      required this.birthDate});
 
   @override
   State<MakePin> createState() => _MakePinState();
 }
 
 class _MakePinState extends State<MakePin> {
+  final AuthenticationService _authenticationService =
+      Get.put(AuthenticationService());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,37 +81,29 @@ class _MakePinState extends State<MakePin> {
                   bottom: MediaQuery.of(context).size.height * 0.02,
                 ),
                 child: Pinput(
-                  length: 6,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: focusedPinTheme,
-                  validator: (s) {
-                    if (s == '222222') {
-                      _autentikasiBiometrik(context);
-                    } else {
-                      'Pin is incorrect';
-                    }
-                    ();
-                  },
-                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                  showCursor: true,
-                  onCompleted: (pin) => print(pin),
-                ),
+                    length: 6,
+                    androidSmsAutofillMethod:
+                        AndroidSmsAutofillMethod.smsRetrieverApi,
+                    closeKeyboardWhenCompleted: true,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    showCursor: true,
+                    onCompleted: (pin) {
+                      () async {
+                        await _authenticationService.register(
+                            phoneNum: widget.phoneNum,
+                            name: widget.nama,
+                            email: widget.email,
+                            birthDate: widget.birthDate,
+                            pin: pin);
+                      }();
+                    }),
               ),
               const SizedBox(
                 child: Padding(padding: EdgeInsets.fromLTRB(0, 130, 0, 130)),
-              ),
-              TextButton(
-                onPressed: () {
-                  _autentikasiBiometrik(context);
-                },
-                style: TextButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40),
-                  backgroundColor: RawatinColorTheme.orange,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                child: Text('Lanjut',
-                    style: RawatinColorTheme.secondaryTextTheme.titleSmall),
               ),
             ],
           ),

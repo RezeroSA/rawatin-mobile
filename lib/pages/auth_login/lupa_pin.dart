@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+
 import 'package:rawatin/service/Authentication.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:get/get.dart';
@@ -23,15 +24,15 @@ final focusedPinTheme = defaultPinTheme.copyDecorationWith(
   border: Border.all(color: RawatinColorTheme.orange),
 );
 
-class AuthLogin extends StatefulWidget {
+class LupaPin extends StatefulWidget {
   final String phoneNum;
-  const AuthLogin({super.key, required this.phoneNum});
+  const LupaPin({super.key, required this.phoneNum});
 
   @override
-  State<AuthLogin> createState() => _AuthLoginState();
+  State<LupaPin> createState() => _LupaPinState();
 }
 
-class _AuthLoginState extends State<AuthLogin> {
+class _LupaPinState extends State<LupaPin> {
   final pinController = TextEditingController();
   final AuthenticationService _authenticationService =
       Get.put(AuthenticationService());
@@ -58,7 +59,7 @@ class _AuthLoginState extends State<AuthLogin> {
           child: Column(
             children: [
               Text(
-                'Kami sudah mengirimkan kode One Time Password ke nomor WhatsApp ${formattedPhoneNum}',
+                'Kami sudah mengirimkan kode One Time Password ke nomor WhatsApp ${formattedPhoneNum} untuk pemulihan akun',
                 textAlign: TextAlign.center,
               ),
               Container(
@@ -85,7 +86,7 @@ class _AuthLoginState extends State<AuthLogin> {
                   showCursor: true,
                   onCompleted: (pin) {
                     () async {
-                      await _authenticationService.verifyLoginOTP(
+                      await _authenticationService.verifyRecoveryOTP(
                           phoneNum: widget.phoneNum.trim(), otp: pin);
                     }();
                   },

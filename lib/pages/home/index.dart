@@ -1,4 +1,6 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:rawatin/components/nav_model.dart';
 import 'package:rawatin/components/navbar.dart';
 import 'package:rawatin/pages/home/emergency_page.dart';
@@ -16,11 +18,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // late SMIBool homeTrigger;
   final homeNavKey = GlobalKey<NavigatorState>();
   final warningNavKey = GlobalKey<NavigatorState>();
   final orderNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
+
   int selectedTab = 0;
   List<NavModel> items = [];
 
@@ -100,11 +102,13 @@ class TabPage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    builder: (_) => NotitcationTap(),
-                  ),
-                );
+                ArtSweetAlert.show(
+                    context: context,
+                    artDialogArgs: ArtDialogArgs(
+                        type: ArtSweetAlertType.warning,
+                        title: 'Oops...',
+                        text: 'Maaf, fitur ini sedang dalam pengembangan',
+                        confirmButtonColor: RawatinColorTheme.orange));
               },
               icon: const Icon(
                 Icons.notifications_none,

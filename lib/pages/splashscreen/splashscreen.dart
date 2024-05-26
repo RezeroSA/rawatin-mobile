@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:rawatin/pages/home/index.dart';
 import 'package:rawatin/pages/welcome_page/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
@@ -18,11 +21,19 @@ class _SplashscreenState extends State<Splashscreen> {
   }
 
   splashscreenStart() async {
+    final box = GetStorage();
+    print(box);
     var duration = const Duration(seconds: 2);
-    return Timer(duration, () {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const WelcomePage()));
-    });
+
+    if (box.read('token') != null) {
+      return Timer(duration, () {
+        Get.offAll(() => const Home());
+      });
+    } else {
+      return Timer(duration, () {
+        Get.offAll(() => const WelcomePage());
+      });
+    }
   }
 
   @override

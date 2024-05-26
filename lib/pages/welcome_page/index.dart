@@ -1,11 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:rawatin/components/top_logo.dart';
 import 'package:rawatin/pages/login/index.dart';
 import 'package:rawatin/pages/register/index.dart';
 import 'package:rawatin/utils/utils.dart';
+import 'package:geolocator/geolocator.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  Future<Position> _getPositionAccess() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      // return Future.error('Location services are disabled.');
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        animType: QuickAlertAnimType.slideInUp,
+        title: 'Oops...',
+        text: 'Rawat.in membutuhkan akses lokasi agar berfungsi dengan baik',
+        confirmBtnText: 'OK',
+        confirmBtnColor: RawatinColorTheme.orange,
+        autoCloseDuration: Duration(seconds: 5),
+      );
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        // return Future.error('Location permissions are denied');
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.warning,
+          animType: QuickAlertAnimType.slideInUp,
+          title: 'Oops...',
+          text: 'Rawat.in membutuhkan akses lokasi agar berfungsi dengan baik',
+          confirmBtnText: 'OK',
+          confirmBtnColor: RawatinColorTheme.orange,
+          autoCloseDuration: Duration(seconds: 5),
+        );
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      // return Future.error(
+      //     'Location permissions are permanently denied, we cannot request permissions.');
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        animType: QuickAlertAnimType.slideInUp,
+        title: 'Oops...',
+        text: 'Rawat.in membutuhkan akses lokasi agar berfungsi dengan baik',
+        confirmBtnText: 'OK',
+        confirmBtnColor: RawatinColorTheme.orange,
+        autoCloseDuration: Duration(seconds: 5),
+      );
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    // print(await Geolocator.getCurrentPosition());
+    return await Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Panggil fungsi yang ingin dijalankan saat halaman dimuat
+    _getPositionAccess();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -82,12 +82,6 @@ class InformasiAplikasi extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Nurhikmah Ibrahim - 204855091',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                      Text(
                         'Philander Alvando Davian - 2131103',
                         style: TextStyle(
                           fontSize: 15,
@@ -95,12 +89,6 @@ class InformasiAplikasi extends StatelessWidget {
                       ),
                       Text(
                         'Ricky Fernando - 2131057',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                      Text(
-                        'Andrian Muhammad Ramdhan - 21573008',
                         style: TextStyle(
                           fontSize: 15,
                         ),

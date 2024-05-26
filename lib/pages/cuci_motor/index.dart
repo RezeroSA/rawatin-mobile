@@ -1,34 +1,30 @@
-import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:rawatin/constraint/constraint.dart';
-import 'package:rawatin/pages/buat_pesanan/index.dart';
 import 'package:rawatin/pages/cari_alamat/index.dart';
 import 'package:rawatin/pages/payment_method/index.dart';
-import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CuciMobil extends StatefulWidget {
-  const CuciMobil({super.key});
+class CuciMotor extends StatefulWidget {
+  const CuciMotor({super.key});
 
   @override
-  State<CuciMobil> createState() => _CuciMobilState();
+  State<CuciMotor> createState() => _CuciMotorState();
 }
 
-class _CuciMobilState extends State<CuciMobil> {
-  String service = 'Cuci Mobil';
+class _CuciMotorState extends State<CuciMotor> {
+  String service = 'Cuci Motor';
   String tipeLayanan = 'Cuci dirumah';
   bool isCuciDirumah = true;
   bool isCuciDiBengkel = false;
-  double tarifLayanan = 15000;
+  double tarifLayanan = 7500;
   double tarif = 0;
   double total = 0;
   String metodePembayaran = '';
@@ -153,13 +149,8 @@ class _CuciMobilState extends State<CuciMobil> {
     });
   }
 
-  final OrderService _orderService = Get.put(OrderService());
-
   @override
   Widget build(BuildContext context) {
-    final box = GetStorage();
-    String token = box.read('token') ?? '';
-    String phoneNum = box.read('phoneNum') ?? '';
     MoneyFormatter fmf = MoneyFormatter(
         amount: tarif,
         settings: MoneyFormatterSettings(
@@ -187,7 +178,7 @@ class _CuciMobilState extends State<CuciMobil> {
         surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         title: const Text(
-          'Cuci Mobil',
+          'Cuci Motor',
           style: TextStyle(
             fontSize: 24,
             fontFamily: 'Arial Rounded',
@@ -243,7 +234,7 @@ class _CuciMobilState extends State<CuciMobil> {
                     // );
                     setState(() {
                       tipeLayanan = 'Cuci dirumah';
-                      tarifLayanan = 15000;
+                      tarifLayanan = 7500;
                       isCuciDirumah = true;
                       isCuciDiBengkel = false;
                     });
@@ -272,7 +263,7 @@ class _CuciMobilState extends State<CuciMobil> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 15, top: 20),
                                     child: Icon(
-                                      FontAwesomeIcons.car,
+                                      FontAwesomeIcons.motorcycle,
                                       color: RawatinColorTheme.orange,
                                       size: 25,
                                     ),
@@ -311,7 +302,7 @@ class _CuciMobilState extends State<CuciMobil> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Rp 15.000',
+                              'Rp 7.500',
                               style: TextStyle(
                                   fontFamily: 'Arial Rounded',
                                   fontSize: 18,
@@ -319,7 +310,7 @@ class _CuciMobilState extends State<CuciMobil> {
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              'Rp 25.000',
+                              'Rp 15.000',
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                   color: RawatinColorTheme.red,
@@ -356,7 +347,7 @@ class _CuciMobilState extends State<CuciMobil> {
                     // );
                     setState(() {
                       tipeLayanan = 'Cuci di bengkel';
-                      tarifLayanan = 25000;
+                      tarifLayanan = 15000;
                       isCuciDirumah = false;
                       isCuciDiBengkel = true;
                     });
@@ -385,7 +376,7 @@ class _CuciMobilState extends State<CuciMobil> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 15, top: 20),
                                     child: Icon(
-                                      FontAwesomeIcons.car,
+                                      FontAwesomeIcons.motorcycle,
                                       color: RawatinColorTheme.orange,
                                       size: 25,
                                     ),
@@ -424,7 +415,7 @@ class _CuciMobilState extends State<CuciMobil> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Rp 25.000',
+                              'Rp 15.000',
                               style: TextStyle(
                                   fontFamily: 'Arial Rounded',
                                   fontSize: 18,
@@ -432,7 +423,7 @@ class _CuciMobilState extends State<CuciMobil> {
                                   fontWeight: FontWeight.w400),
                             ),
                             Text(
-                              'Rp 35.000',
+                              'Rp 25.000',
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
                                   color: RawatinColorTheme.red,
@@ -799,7 +790,7 @@ class _CuciMobilState extends State<CuciMobil> {
                                               color: RawatinColorTheme.black,
                                               fontSize: 14),
                                           text:
-                                              'Layanan Cuci Mobil - ${tipeLayanan}',
+                                              'Layanan Cuci Motor - ${tipeLayanan}',
                                         ),
                                       ],
                                     ),
@@ -993,40 +984,13 @@ class _CuciMobilState extends State<CuciMobil> {
                 height: 10,
               ),
               TextButton(
-                onPressed: () async {
-                  // print('User : ${service}');
-                  // print('Jenis Layanan : ${service}');
-                  // print('Tipe Layanan : ${tipeLayanan}');
-                  // print('Transport Petugas : ${tarif}');
-                  // print('Tarif Layanan : ${tarifLayanan}');
-                  // print('Total : ${total}');
-                  // print('Metode Pembayaran : ${metodePembayaran}');
-                  // print('Latitude : ${_latLong.latitude}');
-                  // print('Longitude : ${_latLong.longitude}');
-
-                  if (metodePembayaran == '') {
-                    ArtSweetAlert.show(
-                        context: context,
-                        artDialogArgs: ArtDialogArgs(
-                            type: ArtSweetAlertType.warning,
-                            title: 'Oops...',
-                            text: 'Kamu belum memilih metode pembayaran',
-                            confirmButtonColor: RawatinColorTheme.orange));
-                  } else {
-                    () async {
-                      await _orderService.insertOrder(
-                          userId: phoneNum,
-                          serviceId: tipeLayanan == 'Cuci dirumah' ? 1 : 2,
-                          service_fee: tarifLayanan,
-                          transport_fee: tarif,
-                          total: total,
-                          payment_method: metodePembayaran,
-                          latitude: _latLong.latitude,
-                          longitude: _latLong.longitude);
-                    }();
-                  }
-
-                  // print(box.getKeys());
+                onPressed: () {
+                  print('Jenis Layanan : ${service}');
+                  print('Tipe Layanan : ${tipeLayanan}');
+                  print('Transport Petugas : ${tarif}');
+                  print('Tarif Layanan : ${tarifLayanan}');
+                  print('Total : ${total}');
+                  print('Metode Pembayaran : ${metodePembayaran}');
                 },
                 style: TextButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),

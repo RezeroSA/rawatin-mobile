@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:rawatin/constraint/constraint.dart';
 import 'package:rawatin/pages/change_language/index.dart';
-import 'package:rawatin/pages/ganti_pin/index.dart';
+import 'package:rawatin/pages/edit_profile/index.dart';
 import 'package:rawatin/pages/informasi_aplikasi/index.dart';
 import 'package:rawatin/pages/order_page/index.dart';
-import 'package:rawatin/pages/welcome_page/index.dart';
+import 'package:rawatin/service/authentication.dart';
 import 'package:rawatin/utils/utils.dart';
+import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -18,522 +22,586 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin {
   final orderNavKey = GlobalKey<NavigatorState>();
+  final AuthenticationService _authenticationService =
+      Get.put(AuthenticationService());
+
+  final box = GetStorage();
+
+  String name = '';
+  String phone = '';
+  String email = '';
+  String avatar = '';
+  bool _isLoading = false;
+
+  Future getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final res =
+        await _authenticationService.getProfile(phoneNum: box.read('phoneNum'));
+
+    if (res != null) {
+      setState(() {
+        _isLoading = false;
+        name = res['name'];
+        phone = res['phone'];
+        email = res['email'];
+        avatar = res['avatar'];
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+        name = 'Gagal Mengambil Data';
+        phone = '';
+        email = '';
+        avatar = '';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getProfile();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              child: Padding(padding: EdgeInsets.fromLTRB(0, 35, 0, 10)),
-            ),
-            RichText(
-              text: const TextSpan(
-                children: [
-                  TextSpan(
-                    style: TextStyle(
-                        color: RawatinColorTheme.black,
-                        fontFamily: 'Arial Rounded',
-                        fontSize: 30),
-                    text: 'Akun saya',
+      body: Skeletonizer(
+        enabled: _isLoading,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  child: Padding(padding: EdgeInsets.fromLTRB(0, 35, 0, 10)),
+                ),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        style: TextStyle(
+                            color: RawatinColorTheme.black,
+                            fontFamily: 'Arial Rounded',
+                            fontSize: 30),
+                        text: 'Akun saya',
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-              width: double.maxFinite,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image(
-                      image: AssetsLocation.imageLocation('nahoko'),
-                      height: 110.0,
-                      width: 110.0,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 110,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                style: TextStyle(
-                                    color: RawatinColorTheme.black,
-                                    fontFamily: 'Arial Rounded',
-                                    fontSize: 30),
-                                text: 'Alika Naziera',
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      avatar == ''
+                          ? const SizedBox()
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image(
+                                image: NetworkImage(onlineAssets + avatar),
+                                height: 110.0,
+                                width: 110.0,
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
                               ),
-                            ],
-                          ),
-                        ),
-                        const Text(
-                          'alikanaziera@gmail.com',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                        const Text(
-                          '+62 851 5799 1015',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 95,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Icon(Icons.edit)],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            RichText(
-              text: const TextSpan(
-                children: [
-                  TextSpan(
-                    style: TextStyle(
-                        color: RawatinColorTheme.black,
-                        fontFamily: 'Arial Rounded',
-                        fontSize: 25),
-                    text: 'Akun',
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.42,
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (_) => const OrderPageMain(),
                             ),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // ClipRRect(
+                      //   borderRadius: BorderRadius.circular(20),
+                      //   child: Image(
+                      //     image: AssetsLocation.imageLocation('jiro'),
+                      //     height: 110.0,
+                      //     width: 110.0,
+                      //     fit: BoxFit.cover,
+                      //     alignment: Alignment.topCenter,
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 110,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.receipt_long_outlined,
-                                  size: 25,
-                                  color: RawatinColorTheme.black,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Pesanan',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.black)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Cek riwayat & pesanan aktif',
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
                                     style: TextStyle(
                                         color: RawatinColorTheme.black,
-                                        fontWeight: FontWeight.w400)),
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (_) => const ChangeLanguage(),
-                            ),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.public,
-                                  size: 25,
-                                  color: RawatinColorTheme.black,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Ganti Bahasa',
-                                    style: TextStyle(
                                         fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.black)),
-                              ],
+                                        fontSize: 30),
+                                    text: name,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
-                                ),
-                              ],
+                            Text(
+                              email,
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              phone,
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (_) => const GantiPin(),
-                            ),
-                          );
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => EditProfile());
                         },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.key,
-                                  size: 25,
-                                  color: RawatinColorTheme.black,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Ganti PIN',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.black)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
-                                ),
-                              ],
-                            ),
-                          ],
+                        child: const SizedBox(
+                          height: 95,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [Icon(Icons.edit)],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 2),
-                  //   child: Container(
-                  //     decoration: const BoxDecoration(
-                  //         border: Border(
-                  //             bottom: BorderSide(
-                  //                 width: 1,
-                  //                 color: RawatinColorTheme.secondaryGrey))),
-                  //     child: TextButton(
-                  //       style: TextButton.styleFrom(
-                  //         padding: EdgeInsets.zero,
-                  //       ),
-                  //       onPressed: () {},
-                  //       child: const Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           Row(
-                  //             children: [
-                  //               Icon(
-                  //                 Icons.help_outline,
-                  //                 size: 25,
-                  //                 color: RawatinColorTheme.black,
-                  //               ),
-                  //               SizedBox(
-                  //                 width: 10,
-                  //               ),
-                  //               Text('FAQ',
-                  //                   style: TextStyle(
-                  //                       fontFamily: 'Arial Rounded',
-                  //                       fontSize: 17,
-                  //                       color: RawatinColorTheme.black)),
-                  //             ],
-                  //           ),
-                  //           Row(
-                  //             children: [
-                  //               Icon(
-                  //                 Icons.arrow_forward_ios,
-                  //                 color: RawatinColorTheme.black,
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 2),
-                  //   child: Container(
-                  //     decoration: const BoxDecoration(
-                  //         border: Border(
-                  //             bottom: BorderSide(
-                  //                 width: 1,
-                  //                 color: RawatinColorTheme.secondaryGrey))),
-                  //     child: TextButton(
-                  //       style: TextButton.styleFrom(
-                  //         padding: EdgeInsets.zero,
-                  //       ),
-                  //       onPressed: () {},
-                  //       child: const Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         children: [
-                  //           Row(
-                  //             children: [
-                  //               FaIcon(
-                  //                 FontAwesomeIcons.solidLifeRing,
-                  //                 color: RawatinColorTheme.black,
-                  //                 size: 22,
-                  //               ),
-                  //               SizedBox(
-                  //                 width: 10,
-                  //               ),
-                  //               Text('Pusat Bantuan',
-                  //                   style: TextStyle(
-                  //                       fontFamily: 'Arial Rounded',
-                  //                       fontSize: 17,
-                  //                       color: RawatinColorTheme.black)),
-                  //             ],
-                  //           ),
-                  //           Row(
-                  //             children: [
-                  //               Icon(
-                  //                 Icons.arrow_forward_ios,
-                  //                 color: RawatinColorTheme.black,
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          _rating(context);
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star_border_outlined,
-                                  size: 25,
-                                  color: RawatinColorTheme.black,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Beri Kami Nilai',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.black)),
-                              ],
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        style: TextStyle(
+                            color: RawatinColorTheme.black,
+                            fontFamily: 'Arial Rounded',
+                            fontSize: 25),
+                        text: 'Akun',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.37,
+                  // height: double.maxFinite,
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: RawatinColorTheme.secondaryGrey))),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
                             ),
-                            Row(
+                            onPressed: () {
+                              // Navigator.of(context, rootNavigator: true).push(
+                              //   MaterialPageRoute(
+                              //     builder: (_) => const OrderPageMain(),
+                              //   ),
+                              // );
+                              Get.to(() => const OrderPageMain());
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.receipt_long_outlined,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('Pesanan',
+                                        style: TextStyle(
+                                            fontFamily: 'Arial Rounded',
+                                            fontSize: 17,
+                                            color: RawatinColorTheme.black)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Cek riwayat & pesanan aktif',
+                                        style: TextStyle(
+                                            color: RawatinColorTheme.black,
+                                            fontWeight: FontWeight.w400)),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (_) => const InformasiAplikasi(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: RawatinColorTheme.secondaryGrey))),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
                             ),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                            onPressed: () {
+                              Get.to(() => ChangeLanguage());
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(
-                                  FontAwesomeIcons.info,
-                                  size: 20,
-                                  color: RawatinColorTheme.black,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.public,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('Ganti Bahasa',
+                                        style: TextStyle(
+                                            fontFamily: 'Arial Rounded',
+                                            fontSize: 17,
+                                            color: RawatinColorTheme.black)),
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text('Informasi Aplikasi',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.black)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1,
-                                  color: RawatinColorTheme.secondaryGrey))),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (_) => const WelcomePage(),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(vertical: 2),
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //         border: Border(
+                      //             bottom: BorderSide(
+                      //                 width: 1,
+                      //                 color: RawatinColorTheme.secondaryGrey))),
+                      //     child: TextButton(
+                      //       style: TextButton.styleFrom(
+                      //         padding: EdgeInsets.zero,
+                      //       ),
+                      //       onPressed: () {
+                      //         Navigator.of(context, rootNavigator: true).push(
+                      //           MaterialPageRoute(
+                      //             builder: (_) => const GantiPin(),
+                      //           ),
+                      //         );
+                      //       },
+                      //       child: const Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.key,
+                      //                 size: 25,
+                      //                 color: RawatinColorTheme.black,
+                      //               ),
+                      //               SizedBox(
+                      //                 width: 10,
+                      //               ),
+                      //               Text('Ganti PIN',
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Arial Rounded',
+                      //                       fontSize: 17,
+                      //                       color: RawatinColorTheme.black)),
+                      //             ],
+                      //           ),
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.arrow_forward_ios,
+                      //                 color: RawatinColorTheme.black,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(vertical: 2),
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //         border: Border(
+                      //             bottom: BorderSide(
+                      //                 width: 1,
+                      //                 color: RawatinColorTheme.secondaryGrey))),
+                      //     child: TextButton(
+                      //       style: TextButton.styleFrom(
+                      //         padding: EdgeInsets.zero,
+                      //       ),
+                      //       onPressed: () {},
+                      //       child: const Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.help_outline,
+                      //                 size: 25,
+                      //                 color: RawatinColorTheme.black,
+                      //               ),
+                      //               SizedBox(
+                      //                 width: 10,
+                      //               ),
+                      //               Text('FAQ',
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Arial Rounded',
+                      //                       fontSize: 17,
+                      //                       color: RawatinColorTheme.black)),
+                      //             ],
+                      //           ),
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.arrow_forward_ios,
+                      //                 color: RawatinColorTheme.black,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(vertical: 2),
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //         border: Border(
+                      //             bottom: BorderSide(
+                      //                 width: 1,
+                      //                 color: RawatinColorTheme.secondaryGrey))),
+                      //     child: TextButton(
+                      //       style: TextButton.styleFrom(
+                      //         padding: EdgeInsets.zero,
+                      //       ),
+                      //       onPressed: () {},
+                      //       child: const Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               FaIcon(
+                      //                 FontAwesomeIcons.solidLifeRing,
+                      //                 color: RawatinColorTheme.black,
+                      //                 size: 22,
+                      //               ),
+                      //               SizedBox(
+                      //                 width: 10,
+                      //               ),
+                      //               Text('Pusat Bantuan',
+                      //                   style: TextStyle(
+                      //                       fontFamily: 'Arial Rounded',
+                      //                       fontSize: 17,
+                      //                       color: RawatinColorTheme.black)),
+                      //             ],
+                      //           ),
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.arrow_forward_ios,
+                      //                 color: RawatinColorTheme.black,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: RawatinColorTheme.secondaryGrey))),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
                             ),
-                          );
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                            onPressed: () {
+                              _rating(context);
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(
-                                  Icons.logout,
-                                  size: 25,
-                                  color: RawatinColorTheme.red,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star_border_outlined,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('Beri Kami Nilai',
+                                        style: TextStyle(
+                                            fontFamily: 'Arial Rounded',
+                                            fontSize: 17,
+                                            color: RawatinColorTheme.black)),
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 10,
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                  ],
                                 ),
-                                Text('Keluar',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 17,
-                                        color: RawatinColorTheme.red)),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: RawatinColorTheme.black,
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: RawatinColorTheme.secondaryGrey))),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const InformasiAplikasi(),
+                                ),
+                              );
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.info,
+                                      size: 20,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('Informasi Aplikasi',
+                                        style: TextStyle(
+                                            fontFamily: 'Arial Rounded',
+                                            fontSize: 17,
+                                            color: RawatinColorTheme.black)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1,
+                                      color: RawatinColorTheme.secondaryGrey))),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: () async {
+                              await _authenticationService.logout();
+                              // Navigator.of(context, rootNavigator: true).push(
+                              //   MaterialPageRoute(
+                              //     builder: (_) => const WelcomePage(),
+                              //   ),
+                              // );
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.logout,
+                                      size: 25,
+                                      color: RawatinColorTheme.red,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('Keluar',
+                                        style: TextStyle(
+                                            fontFamily: 'Arial Rounded',
+                                            fontSize: 17,
+                                            color: RawatinColorTheme.red)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: RawatinColorTheme.black,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -10,17 +10,16 @@ import 'package:money_formatter/money_formatter.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:typing_text/typing_text.dart';
 
-class OrderDetail extends StatefulWidget {
-  OrderDetail({super.key, required this.orderId});
+class Canceled extends StatefulWidget {
+  Canceled({super.key, required this.orderId});
   final int orderId;
 
   @override
-  State<OrderDetail> createState() => _OrderDetailState();
+  State<Canceled> createState() => _CanceledState();
 }
 
-class _OrderDetailState extends State<OrderDetail> {
+class _CanceledState extends State<Canceled> {
   OrderService _orderService = Get.put(OrderService());
   bool _isLoading = false;
   int orderId = 0;
@@ -34,27 +33,31 @@ class _OrderDetailState extends State<OrderDetail> {
   double transport_fee = 8000;
   double total = 0;
   String location = '';
+  String alasanBatal = '';
   LatLng _latLong = LatLng(0, 0);
 
   Future getDetail() async {
     setState(() {
       _isLoading = true;
     });
-    var res = await _orderService.detailCompleteOrder(orderId: widget.orderId);
+    var res = await _orderService.detailCanceledOrder(orderId: widget.orderId);
     final order = res.data['data']['order'];
-    final officer = res.data['data']['officer'];
+    final officer = res.data['data']['officer'] != null
+        ? res.data['data']['officer']
+        : null;
 
     setState(() {
-      petugas = officer['name'];
-      phonePetugas = officer['phone'];
+      petugas = officer != null ? officer['name'] : '';
+      phonePetugas = officer != null ? officer['phone'] : '';
       rating = order['rating'] != null ? order['rating'] + 0.0 : 0 + 0.0;
-      review = order['customer_notes'];
+      review = order['customer_notes'] != null ? order['customer_notes'] : '';
       layanan = order['name'];
       service_fee = order['service_fee'] + 0.0;
       transport_fee = order['transport_fee'] + 0.0;
       total = order['total'] + 0.0;
       _latLong = LatLng(order['latitude'], order['longitude']);
       orderId = order['id'];
+      alasanBatal = order['cancelled_reason'];
     });
   }
 
@@ -390,270 +393,114 @@ class _OrderDetailState extends State<OrderDetail> {
                   ],
                 ),
                 const SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  width: double.maxFinite,
-                  height: 2,
-                  decoration: const BoxDecoration(
-                      color: RawatinColorTheme.orange,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                const SizedBox(
                   height: 30,
                 ),
-                Container(
-                  child: SizedBox(
-                    // width: MediaQuery.of(context).size.width * 1,
-                    width: double.maxFinite,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image(
-                                image: AssetsLocation.imageLocation('petugas'),
-                                height: 80.0,
-                                width: 80.0,
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter,
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(left: 20),
-                              height: 80,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Petugas',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontFamily: 'Arial Rounded',
-                                          color:
-                                              RawatinColorTheme.secondaryGrey,
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 200,
-                                        child: Text(petugas),
-                                      ),
-                                      Container(
-                                        width: 200,
-                                        child: Text(phonePetugas),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        style: TextStyle(
+                            color: RawatinColorTheme.black,
+                            fontFamily: 'Arial Rounded',
+                            fontSize: 20),
+                        text: 'Alasan Batal',
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                rating == 0
-                    ? RichText(
-                        text: const TextSpan(
-                          children: [
-                            TextSpan(
-                              style: TextStyle(
-                                  color: RawatinColorTheme.black,
-                                  fontFamily: 'Arial Rounded',
-                                  fontSize: 20),
-                              text: 'Kasih rating buat petugas',
-                            ),
-                          ],
+                TextFormField(
+                  maxLines: 4,
+                  enabled: false,
+                  initialValue: alasanBatal,
+                  decoration: const InputDecoration(
+                    labelStyle: TextStyle(color: RawatinColorTheme.black),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: RawatinColorTheme.orange),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: RawatinColorTheme.orange),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  ),
+                ),
+                // Container(
+                //   width: double.maxFinite,
+                //   height: 2,
+                //   decoration: const BoxDecoration(
+                //       color: RawatinColorTheme.orange,
+                //       borderRadius: BorderRadius.all(Radius.circular(10))),
+                // ),
+                const SizedBox(
+                  height: 30,
+                ),
+                petugas != ''
+                    ? Container(
+                        child: SizedBox(
+                          // width: MediaQuery.of(context).size.width * 1,
+                          width: double.maxFinite,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image(
+                                      image: AssetsLocation.imageLocation(
+                                          'petugas'),
+                                      height: 80.0,
+                                      width: 80.0,
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 20),
+                                    height: 80,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Petugas',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: 'Arial Rounded',
+                                                color: RawatinColorTheme
+                                                    .secondaryGrey,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 200,
+                                              child: Text(petugas),
+                                            ),
+                                            Container(
+                                              width: 200,
+                                              child: Text(phonePetugas),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       )
-                    : RichText(
-                        text: const TextSpan(
-                          children: [
-                            TextSpan(
-                              style: TextStyle(
-                                  color: RawatinColorTheme.black,
-                                  fontFamily: 'Arial Rounded',
-                                  fontSize: 20),
-                              text: 'Pesanan udah selesai',
-                            ),
-                          ],
-                        ),
-                      ),
+                    : Container(),
                 const SizedBox(
                   height: 15,
-                ),
-                rating == 0
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                            RatingBar.builder(
-                              initialRating: 0,
-                              minRating: 1,
-                              direction: Axis.horizontal,
-                              allowHalfRating: false,
-                              itemCount: 5,
-                              itemPadding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
-                              itemBuilder: (context, _) => const Icon(
-                                Icons.star_border_rounded,
-                                color: Colors.amber,
-                              ),
-                              onRatingUpdate: (rating) async {
-                                setState(() {
-                                  submitedRating = rating;
-                                });
-                              },
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            TextFormField(
-                              controller: reviewController,
-                              decoration: const InputDecoration(
-                                labelText: 'Ucapin makasih ke petugas...',
-                                labelStyle:
-                                    TextStyle(color: RawatinColorTheme.black),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: RawatinColorTheme.orange),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: RawatinColorTheme.orange),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                if (submitedRating == 0) {
-                                  ArtSweetAlert.show(
-                                    context: context,
-                                    artDialogArgs: ArtDialogArgs(
-                                        type: ArtSweetAlertType.warning,
-                                        title: 'Ups',
-                                        text: 'Ratingnya belum kamu isi',
-                                        confirmButtonText: 'Oke, saya isi dulu',
-                                        confirmButtonColor:
-                                            RawatinColorTheme.orange),
-                                  );
-                                } else {
-                                  var res = await _orderService.submitRating(
-                                      orderId: orderId,
-                                      rating: submitedRating,
-                                      review: reviewController.text);
-
-                                  if (res == true) {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    getDetail().then((value) =>
-                                        _getLocationUpdate(_latLong));
-                                    ArtSweetAlert.show(
-                                        context: context,
-                                        artDialogArgs: ArtDialogArgs(
-                                          type: ArtSweetAlertType.success,
-                                          title: 'Berhasil',
-                                          text: 'Cippp, review udah dimacukin',
-                                          confirmButtonText: 'OK',
-                                          confirmButtonColor:
-                                              RawatinColorTheme.orange,
-                                        ));
-                                  } else {
-                                    ArtSweetAlert.show(
-                                        context: context,
-                                        artDialogArgs: ArtDialogArgs(
-                                          type: ArtSweetAlertType.danger,
-                                          title: 'Ups',
-                                          text:
-                                              'Terjadi kesalahan waktu mengirim review, coba lagi yaaa',
-                                          confirmButtonText: 'OK',
-                                          confirmButtonColor:
-                                              RawatinColorTheme.orange,
-                                        ));
-                                  }
-                                }
-                              },
-                              style: TextButton.styleFrom(
-                                minimumSize: const Size.fromHeight(40),
-                                backgroundColor: RawatinColorTheme.orange,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                              ),
-                              child: Text('Simpan',
-                                  style: RawatinColorTheme
-                                      .secondaryTextTheme.titleSmall),
-                            ),
-                          ])
-                    : Column(
-                        children: [
-                          RatingBar.builder(
-                            initialRating: rating,
-                            minRating: 1,
-                            ignoreGestures: true,
-                            direction: Axis.horizontal,
-                            allowHalfRating: false,
-                            itemCount: 5,
-                            itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star_border_rounded,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (rating) {},
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          TextFormField(
-                            // controller: reviewController,
-                            initialValue: review,
-                            enabled: false,
-                            decoration: const InputDecoration(
-                              labelText: 'Ucapin makasih ke petugas...',
-                              labelStyle:
-                                  TextStyle(color: RawatinColorTheme.black),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: RawatinColorTheme.orange),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: RawatinColorTheme.orange),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                            ),
-                          ),
-                        ],
-                      ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 20,
                 ),
               ],
             ),

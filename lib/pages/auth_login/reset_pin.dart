@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:rawatin/service/Authentication.dart';
@@ -23,28 +21,27 @@ final focusedPinTheme = defaultPinTheme.copyDecorationWith(
   border: Border.all(color: RawatinColorTheme.orange),
 );
 
-class AuthLogin extends StatefulWidget {
+class ResetPIN extends StatefulWidget {
   final String phoneNum;
-  const AuthLogin({super.key, required this.phoneNum});
+  const ResetPIN({super.key, required this.phoneNum});
 
   @override
-  State<AuthLogin> createState() => _AuthLoginState();
+  State<ResetPIN> createState() => _ResetPINState();
 }
 
-class _AuthLoginState extends State<AuthLogin> {
+class _ResetPINState extends State<ResetPIN> {
   final pinController = TextEditingController();
   final AuthenticationService _authenticationService =
       Get.put(AuthenticationService());
   @override
   Widget build(BuildContext context) {
-    String formattedPhoneNum = formatPhoneNumber('0' + widget.phoneNum);
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
         surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         title: const Text(
-          'Verifikasi OTP',
+          'Atur Ulang PIN Kamu',
           style: TextStyle(
             fontSize: 24,
             fontFamily: 'Arial Rounded',
@@ -57,10 +54,10 @@ class _AuthLoginState extends State<AuthLogin> {
           padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
           child: Column(
             children: [
-              Text(
-                'Kami sudah mengirimkan kode One Time Password ke nomor WhatsApp ${formattedPhoneNum}',
-                textAlign: TextAlign.center,
-              ),
+              // Text(
+              //   'Kami sudah mengirimkan kode One Time Password ke nomor WhatsApp ${formattedPhoneNum}',
+              //   textAlign: TextAlign.center,
+              // ),
               Container(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.02,
@@ -79,76 +76,30 @@ class _AuthLoginState extends State<AuthLogin> {
                       AndroidSmsAutofillMethod.smsRetrieverApi,
                   closeKeyboardWhenCompleted: true,
                   keyboardType: TextInputType.number,
+                  obscureText: true,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: focusedPinTheme,
                   pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                   showCursor: true,
                   onCompleted: (pin) {
                     () async {
-                      await _authenticationService.verifyLoginOTP(
-                          phoneNum: widget.phoneNum.trim(), otp: pin);
+                      var login = await _authenticationService.resetPIN(
+                          phoneNum: widget.phoneNum, pin: pin);
+                      if (login) {
+                        pinController.clear();
+                      } else {
+                        pinController.clear();
+                      }
                     }();
                   },
                 ),
               ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    const TextSpan(
-                      style: TextStyle(color: RawatinColorTheme.black),
-                      text: 'Tidak menerima OTP? ',
-                    ),
-                    TextSpan(
-                        style: const TextStyle(
-                            color: RawatinColorTheme.orange,
-                            fontFamily: 'Arial Rounded'),
-                        text: 'Kirim ulang OTP',
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            () async {
-                              await _authenticationService.resendOTPLogin(
-                                  phoneNum: widget.phoneNum.trim());
-                              _showDialog(context);
-                              pinController.clear();
-                            }();
-                          }),
-                  ],
-                ),
-              )
             ],
           ),
         ),
       ),
     );
   }
-}
-
-_showDialog(BuildContext context) {
-  showDialog(
-      builder: (context) => CupertinoAlertDialog(
-            title: const Column(
-              children: <Widget>[
-                Text("OTP sudah dikirim"),
-                Icon(
-                  Icons.check,
-                  color: Colors.green,
-                  size: 100,
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: const Text(
-                  "OK",
-                  style: TextStyle(color: RawatinColorTheme.orange),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-      context: context);
 }
 
 String formatPhoneNumber(String phoneNumber) {

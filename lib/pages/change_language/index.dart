@@ -1,13 +1,37 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:rawatin/pages/home/index.dart';
 import 'package:rawatin/utils/utils.dart';
 
-class ChangeLanguage extends StatelessWidget {
-  const ChangeLanguage({super.key});
+// ignore: must_be_immutable
+class ChangeLanguage extends StatefulWidget {
+  ChangeLanguage({super.key});
+
+  @override
+  State<ChangeLanguage> createState() => _ChangeLanguageState();
+}
+
+class _ChangeLanguageState extends State<ChangeLanguage> {
+  int type = 1;
 
   @override
   Widget build(BuildContext context) {
+    void handleRadio(Object? e) {
+      if (e == 2) {
+        return ArtSweetAlert.show(
+            context: context,
+            artDialogArgs: ArtDialogArgs(
+                type: ArtSweetAlertType.warning,
+                title: 'Upss',
+                text: 'Saat ini hanya tersedia bahasa indonesia :(',
+                confirmButtonText: 'Oke, gapapa',
+                confirmButtonColor: RawatinColorTheme.orange));
+      } else {
+        type = e as int;
+      }
+    }
+
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
       appBar: AppBar(
@@ -62,7 +86,7 @@ class ChangeLanguage extends StatelessWidget {
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        _autentikasiBiometrik(context);
+                        handleRadio(1);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,11 +113,12 @@ class ChangeLanguage extends StatelessWidget {
                           Row(
                             children: [
                               Radio(
-                                  value: "radio value",
-                                  groupValue: "group value",
+                                  activeColor: RawatinColorTheme.orange,
+                                  value: 1,
+                                  groupValue: type,
                                   onChanged: (value) {
-                                    print(value); //selected value
-                                  })
+                                    handleRadio(value);
+                                  }),
                             ],
                           ),
                         ],
@@ -114,7 +139,7 @@ class ChangeLanguage extends StatelessWidget {
                         padding: EdgeInsets.zero,
                       ),
                       onPressed: () {
-                        _autentikasiBiometrik(context);
+                        handleRadio(2);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,10 +166,11 @@ class ChangeLanguage extends StatelessWidget {
                           Row(
                             children: [
                               Radio(
-                                  value: "radio value",
-                                  groupValue: "group value",
+                                  value: 2,
+                                  activeColor: RawatinColorTheme.orange,
+                                  groupValue: type,
                                   onChanged: (value) {
-                                    print(value); //selected value
+                                    handleRadio(value);
                                   })
                             ],
                           ),
@@ -160,77 +186,4 @@ class ChangeLanguage extends StatelessWidget {
       ),
     );
   }
-}
-
-_autentikasiBiometrik(context) {
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Dialog(
-              surfaceTintColor: RawatinColorTheme.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(35.0)),
-              child: Container(
-                constraints: const BoxConstraints(maxHeight: 420),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        child:
-                            Padding(padding: EdgeInsets.fromLTRB(0, 15, 0, 15)),
-                      ),
-                      const Text(
-                        'Berhasil',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'Arial Rounded',
-                        ),
-                      ),
-                      const SizedBox(
-                        child:
-                            Padding(padding: EdgeInsets.fromLTRB(0, 5, 0, 5)),
-                      ),
-                      const Text(
-                        'PIN kamu berhasil diubah',
-                        textAlign: TextAlign.center,
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        child: Image(
-                            image:
-                                AssetsLocation.imageLocation('ganti-bahasa')),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Home()),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size.fromHeight(40),
-                          backgroundColor: RawatinColorTheme.orange,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        child: Text('Selesai',
-                            style: RawatinColorTheme
-                                .secondaryTextTheme.titleSmall),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      });
 }

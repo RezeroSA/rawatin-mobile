@@ -1,12 +1,27 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:rawatin/pages/buat_pesanan/index.dart';
 import 'package:rawatin/pages/cuci_mobil/index.dart';
+import 'package:rawatin/pages/cuci_motor/index.dart';
+import 'package:rawatin/service/authentication.dart';
+import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final numbers = List.generate(4, (index) => '$index');
+  final box = GetStorage();
+  final controller = ScrollController();
   final List<String> services = [
     'Cuci Mobil',
     'Servis Mobil',
@@ -20,7 +35,59 @@ class HomePage extends StatelessWidget {
     FontAwesomeIcons.motorcycle,
   ];
 
-  final controller = ScrollController();
+  OrderService _orderService = Get.put(OrderService());
+  AuthenticationService _authenticationService =
+      Get.put(AuthenticationService());
+  bool _isOrderExist = false;
+  String orderType = '';
+
+  Future<void> _getOrder() async {
+    final res =
+        await _orderService.getOrderByUser(userId: box.read('phoneNum'));
+
+    if (res != null) {
+      setState(() {
+        _isOrderExist = true;
+        orderType = res['order']['name'];
+      });
+    }
+  }
+
+  String name = '';
+  String phone = '';
+  String email = '';
+  bool _isLoading = false;
+
+  Future getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final res =
+        await _authenticationService.getProfile(phoneNum: box.read('phoneNum'));
+
+    if (res != null) {
+      setState(() {
+        _isLoading = false;
+        name = res['name'];
+        phone = res['phone'];
+        email = res['email'];
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+        name = 'Gagal Mengambil Data';
+        phone = '';
+        email = '';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProfile();
+    _getOrder();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +105,25 @@ class HomePage extends StatelessWidget {
               const SizedBox(
                 child: Padding(padding: EdgeInsets.fromLTRB(0, 15, 0, 10)),
               ),
-              RichText(
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      style: TextStyle(
-                          color: RawatinColorTheme.black, fontSize: 17),
-                      text: 'Halo, 👋🏻 \n',
-                    ),
-                    TextSpan(
-                      style: TextStyle(
-                          color: RawatinColorTheme.orange,
-                          fontFamily: 'Arial Rounded',
-                          fontSize: 24),
-                      text: 'User',
-                    ),
-                  ],
+              Skeletonizer(
+                enabled: _isLoading,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        style: TextStyle(
+                            color: RawatinColorTheme.black, fontSize: 17),
+                        text: 'Halo, 👋🏻 \n',
+                      ),
+                      TextSpan(
+                        style: TextStyle(
+                            color: RawatinColorTheme.orange,
+                            fontFamily: 'Arial Rounded',
+                            fontSize: 24),
+                        text: name,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Row(
@@ -107,11 +177,52 @@ class HomePage extends StatelessWidget {
   Widget buildNumber(context, String number, String service, IconData icon) =>
       ElevatedButton(
         onPressed: () {
-          Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(
-              builder: (_) => const CuciMobil(),
-            ),
-          );
+          if (_isOrderExist) {
+            // print(orderType);
+            if (orderType == 'Cuci Mobil - Cuci Dirumah' ||
+                orderType == 'Cuci Mobil - Cuci Dibengkel') {
+              if (service == 'Cuci Mobil') {
+                Get.to(() => BuatPesanan());
+              } else {
+                ArtSweetAlert.show(
+                    context: context,
+                    artDialogArgs: ArtDialogArgs(
+                        type: ArtSweetAlertType.warning,
+                        title: 'Oops...',
+                        text:
+                            'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
+                        confirmButtonColor: RawatinColorTheme.orange));
+              }
+            } else if (orderType == 'Cuci Motor - Cuci Dirumah' ||
+                orderType == 'Cuci Motor - Cuci Dibengkel') {
+              if (service == 'Cuci Motor') {
+                Get.to(() => BuatPesanan());
+              } else {
+                ArtSweetAlert.show(
+                    context: context,
+                    artDialogArgs: ArtDialogArgs(
+                        type: ArtSweetAlertType.warning,
+                        title: 'Oops...',
+                        text:
+                            'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
+                        confirmButtonColor: RawatinColorTheme.orange));
+              }
+            }
+          } else {
+            if (service == 'Cuci Mobil') {
+              Get.to(() => CuciMobil());
+            } else if (service == 'Cuci Motor') {
+              Get.to(() => CuciMotor());
+            } else {
+              ArtSweetAlert.show(
+                  context: context,
+                  artDialogArgs: ArtDialogArgs(
+                      type: ArtSweetAlertType.warning,
+                      title: 'Oops...',
+                      text: 'Maaf, fitur ini sedang dalam pengembangan',
+                      confirmButtonColor: RawatinColorTheme.orange));
+            }
+          }
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: RawatinColorTheme.secondaryOrange,

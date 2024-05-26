@@ -19,6 +19,12 @@ class EmergencyOrder extends StatefulWidget {
 }
 
 class _EmergencyOrderState extends State<EmergencyOrder> {
+  String services = 'Kecelakaan';
+  bool isKecelakaan = true;
+  bool isBanBocor = false;
+  bool isMesinMogok = false;
+  bool isTersesat = false;
+
   static const LatLng _initialCoordinate =
       LatLng(1.119566826789065, 104.00304630763641);
   static const LatLng _uibCoordinate =
@@ -280,19 +286,29 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: RawatinColorTheme.red,
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: isKecelakaan
+                    ? BoxDecoration(
+                        color: RawatinColorTheme.red,
+                        borderRadius: BorderRadius.circular(10))
+                    : BoxDecoration(
+                        color: RawatinColorTheme.white,
+                        borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OrderPageMain(),
-                      ),
-                    );
+                    // Navigator.of(context, rootNavigator: true).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const OrderPageMain(),
+                    //   ),
+                    // );
+                    setState(() {
+                      isKecelakaan = true;
+                      isBanBocor = false;
+                      isMesinMogok = false;
+                      isTersesat = false;
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -306,13 +322,16 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 15),
                                   child: Image(
-                                    image: AssetsLocation.imageLocation(
-                                        'kecelakaan-putih'),
+                                    image: isKecelakaan
+                                        ? AssetsLocation.imageLocation(
+                                            'kecelakaan-putih')
+                                        : AssetsLocation.imageLocation(
+                                            'kecelakaan'),
                                     height: 40,
                                     width: 40,
                                   ),
                                 )),
-                            const SizedBox(
+                            SizedBox(
                               width: 260,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -323,14 +342,18 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
                                         fontSize: 16,
-                                        color: RawatinColorTheme.white,
+                                        color: isKecelakaan
+                                            ? RawatinColorTheme.white
+                                            : RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   Expanded(
                                     child: Text(
                                       'Kendaraan saya mengalami kecelakaan dan butuh pertolongan sekarang juga',
                                       style: TextStyle(
-                                          color: RawatinColorTheme.white,
+                                          color: isKecelakaan
+                                              ? RawatinColorTheme.white
+                                              : RawatinColorTheme.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12),
                                     ),
@@ -351,19 +374,29 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: RawatinColorTheme.white,
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: isBanBocor
+                    ? BoxDecoration(
+                        color: RawatinColorTheme.red,
+                        borderRadius: BorderRadius.circular(10))
+                    : BoxDecoration(
+                        color: RawatinColorTheme.white,
+                        borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OrderPageMain(),
-                      ),
-                    );
+                    // Navigator.of(context, rootNavigator: true).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const OrderPageMain(),
+                    //   ),
+                    // );
+                    setState(() {
+                      isKecelakaan = false;
+                      isBanBocor = true;
+                      isMesinMogok = false;
+                      isTersesat = false;
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -377,13 +410,16 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 15),
                                   child: Image(
-                                    image: AssetsLocation.imageLocation(
-                                        'ban-bocor'),
+                                    image: isBanBocor
+                                        ? AssetsLocation.imageLocation(
+                                            'ban-bocor-putih')
+                                        : AssetsLocation.imageLocation(
+                                            'ban-bocor'),
                                     height: 40,
                                     width: 40,
                                   ),
                                 )),
-                            const SizedBox(
+                            SizedBox(
                               width: 260,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -394,14 +430,18 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
                                         fontSize: 16,
-                                        color: RawatinColorTheme.black,
+                                        color: isBanBocor
+                                            ? RawatinColorTheme.white
+                                            : RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   Expanded(
                                     child: Text(
                                       'Ban saya bocor dan tidak ada bengkel terdekat. Tolong perbaiki ban saya',
                                       style: TextStyle(
-                                          color: RawatinColorTheme.black,
+                                          color: isBanBocor
+                                              ? RawatinColorTheme.white
+                                              : RawatinColorTheme.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12),
                                     ),
@@ -422,19 +462,29 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: RawatinColorTheme.white,
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: isMesinMogok
+                    ? BoxDecoration(
+                        color: RawatinColorTheme.red,
+                        borderRadius: BorderRadius.circular(10))
+                    : BoxDecoration(
+                        color: RawatinColorTheme.white,
+                        borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OrderPageMain(),
-                      ),
-                    );
+                    // Navigator.of(context, rootNavigator: true).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const OrderPageMain(),
+                    //   ),
+                    // );
+                    setState(() {
+                      isKecelakaan = false;
+                      isBanBocor = false;
+                      isMesinMogok = true;
+                      isTersesat = false;
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -448,13 +498,16 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 15),
                                   child: Image(
-                                    image: AssetsLocation.imageLocation(
-                                        'mesin-mogok'),
+                                    image: isMesinMogok
+                                        ? AssetsLocation.imageLocation(
+                                            'mesin-mogok-putih')
+                                        : AssetsLocation.imageLocation(
+                                            'mesin-mogok'),
                                     height: 40,
                                     width: 40,
                                   ),
                                 )),
-                            const SizedBox(
+                            SizedBox(
                               width: 260,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -465,14 +518,18 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
                                         fontSize: 16,
-                                        color: RawatinColorTheme.black,
+                                        color: isMesinMogok
+                                            ? RawatinColorTheme.white
+                                            : RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   Expanded(
                                     child: Text(
                                       'Kendaraan saya mati tiba-tiba dan tidak ada alat darurat untuk memperbaikinya',
                                       style: TextStyle(
-                                          color: RawatinColorTheme.black,
+                                          color: isMesinMogok
+                                              ? RawatinColorTheme.white
+                                              : RawatinColorTheme.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12),
                                     ),
@@ -493,19 +550,29 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: RawatinColorTheme.white,
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: isTersesat
+                    ? BoxDecoration(
+                        color: RawatinColorTheme.red,
+                        borderRadius: BorderRadius.circular(10))
+                    : BoxDecoration(
+                        color: RawatinColorTheme.white,
+                        borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OrderPageMain(),
-                      ),
-                    );
+                    // Navigator.of(context, rootNavigator: true).push(
+                    //   MaterialPageRoute(
+                    //     builder: (_) => const OrderPageMain(),
+                    //   ),
+                    // );
+                    setState(() {
+                      isKecelakaan = false;
+                      isBanBocor = false;
+                      isMesinMogok = false;
+                      isTersesat = true;
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -519,13 +586,16 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 15),
                                   child: Image(
-                                    image: AssetsLocation.imageLocation(
-                                        'tersesat'),
+                                    image: isTersesat
+                                        ? AssetsLocation.imageLocation(
+                                            'tersesat-putih')
+                                        : AssetsLocation.imageLocation(
+                                            'tersesat'),
                                     height: 40,
                                     width: 40,
                                   ),
                                 )),
-                            const SizedBox(
+                            SizedBox(
                               width: 260,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -536,14 +606,18 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
                                         fontSize: 16,
-                                        color: RawatinColorTheme.black,
+                                        color: isTersesat
+                                            ? RawatinColorTheme.white
+                                            : RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   Expanded(
                                     child: Text(
                                       'Saya tersesat dan tidak tahu kemana arah yang harus saya lalui',
                                       style: TextStyle(
-                                          color: RawatinColorTheme.black,
+                                          color: isTersesat
+                                              ? RawatinColorTheme.white
+                                              : RawatinColorTheme.black,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12),
                                     ),

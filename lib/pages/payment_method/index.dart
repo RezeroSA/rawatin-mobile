@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rawatin/utils/utils.dart';
 
 class PaymentMethod extends StatefulWidget {
@@ -10,9 +11,20 @@ class PaymentMethod extends StatefulWidget {
 
 class _PaymentMethodState extends State<PaymentMethod> {
   int _type = 1;
+  String metodePembayaran = 'Tunai';
 
   void _handleRadio(Object? e) => setState(() {
         _type = e as int;
+
+        if (_type == 1) {
+          metodePembayaran = 'Tunai';
+        } else if (_type == 2) {
+          metodePembayaran = 'E-Wallet';
+        } else if (_type == 3) {
+          metodePembayaran = 'Kartu kredit atau debit';
+        }
+
+        print(metodePembayaran);
       });
   @override
   Widget build(BuildContext context) {
@@ -39,140 +51,155 @@ class _PaymentMethodState extends State<PaymentMethod> {
                 const SizedBox(
                   height: 40,
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  width: size.width,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    border: _type == 1
-                        ? Border.all(width: 1, color: RawatinColorTheme.orange)
-                        : Border.all(width: 0.3, color: RawatinColorTheme.grey),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.transparent,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Radio(
-                                value: 1,
-                                groupValue: _type,
-                                onChanged: _handleRadio,
-                                activeColor: RawatinColorTheme.orange,
-                              ),
-                              const Text(
-                                "Tunai",
-                                style: TextStyle(
-                                  fontFamily: 'Arial Rounded',
-                                  fontSize: 16,
+                GestureDetector(
+                  onTap: () => _handleRadio(1),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    width: size.width,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      border: _type == 1
+                          ? Border.all(
+                              width: 1, color: RawatinColorTheme.orange)
+                          : Border.all(
+                              width: 0.3, color: RawatinColorTheme.grey),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Radio(
+                                  value: 1,
+                                  groupValue: _type,
+                                  onChanged: _handleRadio,
+                                  activeColor: RawatinColorTheme.orange,
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image(
-                            image: AssetsLocation.imageLocation('cash'),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        ],
+                                const Text(
+                                  "Tunai",
+                                  style: TextStyle(
+                                    fontFamily: 'Arial Rounded',
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image(
+                              image: AssetsLocation.imageLocation('cash'),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  width: size.width,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    border: _type == 2
-                        ? Border.all(width: 1, color: RawatinColorTheme.orange)
-                        : Border.all(width: 0.3, color: RawatinColorTheme.grey),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.transparent,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Radio(
-                                value: 2,
-                                groupValue: _type,
-                                onChanged: _handleRadio,
-                                activeColor: RawatinColorTheme.orange,
-                              ),
-                              const Text(
-                                "E-Wallet",
-                                style: TextStyle(
-                                  fontFamily: 'Arial Rounded',
-                                  fontSize: 16,
+                GestureDetector(
+                  onTap: () => _handleRadio(2),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    width: size.width,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      border: _type == 2
+                          ? Border.all(
+                              width: 1, color: RawatinColorTheme.orange)
+                          : Border.all(
+                              width: 0.3, color: RawatinColorTheme.grey),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Radio(
+                                  value: 2,
+                                  groupValue: _type,
+                                  onChanged: _handleRadio,
+                                  activeColor: RawatinColorTheme.orange,
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image(
-                            image: AssetsLocation.imageLocation('e-wallet'),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        ],
+                                const Text(
+                                  "E-Wallet",
+                                  style: TextStyle(
+                                    fontFamily: 'Arial Rounded',
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image(
+                              image: AssetsLocation.imageLocation('e-wallet'),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  width: size.width,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    border: _type == 3
-                        ? Border.all(width: 1, color: RawatinColorTheme.orange)
-                        : Border.all(width: 0.3, color: RawatinColorTheme.grey),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.transparent,
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Radio(
-                                value: 3,
-                                groupValue: _type,
-                                onChanged: _handleRadio,
-                                activeColor: RawatinColorTheme.orange,
-                              ),
-                              const Text(
-                                "Kartu kredit atau debit",
-                                style: TextStyle(
-                                  fontFamily: 'Arial Rounded',
-                                  fontSize: 16,
+                GestureDetector(
+                  onTap: () => _handleRadio(3),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    width: size.width,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      border: _type == 3
+                          ? Border.all(
+                              width: 1, color: RawatinColorTheme.orange)
+                          : Border.all(
+                              width: 0.3, color: RawatinColorTheme.grey),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.transparent,
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Radio(
+                                  value: 3,
+                                  groupValue: _type,
+                                  onChanged: _handleRadio,
+                                  activeColor: RawatinColorTheme.orange,
                                 ),
-                              ),
-                            ],
-                          ),
-                          Image(
-                            image: AssetsLocation.imageLocation('credit'),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        ],
+                                const Text(
+                                  "Kartu kredit atau debit",
+                                  style: TextStyle(
+                                    fontFamily: 'Arial Rounded',
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Image(
+                              image: AssetsLocation.imageLocation('credit'),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -182,7 +209,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Get.back(result: metodePembayaran);
                   },
                   style: TextButton.styleFrom(
                     minimumSize: const Size.fromHeight(40),
