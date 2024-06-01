@@ -3,10 +3,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:rawatin/models/Order.dart';
+import 'package:rawatin/constraint/constraint.dart';
 import 'package:rawatin/pages/buat_pesanan/index.dart';
+import 'package:rawatin/pages/buat_pesanan_darurat/index.dart';
+import 'package:rawatin/pages/detail_pesanan_selesai/index.dart';
+import 'package:rawatin/pages/detail_pesanan_selesai_darurat/index.dart';
 import 'package:rawatin/pages/order_detail/canceled.dart';
 import 'package:rawatin/pages/order_detail/index.dart';
+import 'package:rawatin/pages/pesanan_selesai/index.dart';
+import 'package:rawatin/pages/pesanan_selesai_darurat/index.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 
@@ -43,8 +48,10 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     var res =
         await _orderService.getWaitingOrders(userId: box.read('phoneNum'));
 
+    print(url);
+
     setState(() {
-      orderList = res.data['data']['orders'];
+      orderList = res!.data['data']['orders'];
     });
 
     return [];
@@ -235,13 +242,18 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                                 Text(
                                   order['service_name'],
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color: RawatinColorTheme.black,
                                       fontFamily: "Arial Rounded"),
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.to(() => BuatPesanan());
+                                    if (order['service_name']
+                                        .contains('Darurat')) {
+                                      Get.to(() => BuatPesananDarurat());
+                                    } else {
+                                      Get.to(() => BuatPesanan());
+                                    }
                                   },
                                   child: const SizedBox(
                                     width: 50,
@@ -390,24 +402,25 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                               Text(
                                 snapshot.data![index]['service_name'],
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: RawatinColorTheme.black,
                                     fontFamily: "Arial Rounded"),
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => OrderDetail(
-                                        orderId: snapshot.data![index]
-                                            ['order_id'],
-                                      ));
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .push(
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => OrderDetail(
-                                  //         orderId: snapshot.data![index]
-                                  //             ['order_id']),
-                                  //   ),
-                                  // );
+                                  if (snapshot.data![index]['service_name']
+                                      .contains('Darurat')) {
+                                    Get.to(() => DetailPesananSelesaiDarurat(
+                                          orderId: snapshot.data![index]
+                                              ['order_id'],
+                                        ));
+                                  } else {
+                                    print(snapshot.data![index]['order_id']);
+                                    Get.to(() => DetailPesananSelesai(
+                                          orderId: snapshot.data![index]
+                                              ['order_id'],
+                                        ));
+                                  }
                                 },
                                 child: const SizedBox(
                                   width: 50,
@@ -552,7 +565,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                               Text(
                                 snapshot.data![index]['service_name'],
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: RawatinColorTheme.black,
                                     fontFamily: "Arial Rounded"),
                               ),

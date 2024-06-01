@@ -1,7 +1,5 @@
-import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
@@ -114,7 +112,6 @@ class _CanceledState extends State<Canceled> {
             decimalSeparator: ',',
             fractionDigits: 3,
             compactFormatType: CompactFormatType.short));
-    TextEditingController reviewController = TextEditingController();
 
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,

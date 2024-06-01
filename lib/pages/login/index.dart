@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:rawatin/pages/auth_login/index.dart';
 import 'package:rawatin/service/Authentication.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:get/get.dart';

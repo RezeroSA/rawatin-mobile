@@ -1,9 +1,11 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData, MultipartFile;
+import 'package:image_picker/image_picker.dart';
 import 'package:rawatin/constraint/constraint.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rawatin/pages/buat_pesanan/index.dart';
+import 'package:rawatin/pages/buat_pesanan_darurat/index.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'dart:convert';
 
@@ -55,7 +57,61 @@ class OrderService extends GetxController {
         }
       }
     } catch (e) {
-      print(e);
+      ArtSweetAlert.show(
+          context: Get.context!,
+          artDialogArgs: ArtDialogArgs(
+              type: ArtSweetAlertType.danger,
+              title: 'Gagal',
+              text:
+                  'Terjadi kesalahan saat membuat pesanan, silahkan coba beberapa saat lagi...',
+              confirmButtonText: 'OK',
+              confirmButtonColor: RawatinColorTheme.orange));
+    }
+  }
+
+  Future insertEmergencyOrder({
+    required String userId,
+    required int serviceId,
+    required double service_fee,
+    required double transport_fee,
+    required double total,
+    required String payment_method,
+    required double latitude,
+    required double longitude,
+    required XFile? image,
+  }) async {
+    FormData formData = FormData.fromMap({
+      "user_id": userId,
+      "service_id": serviceId,
+      "service_fee": service_fee,
+      "transport_fee": transport_fee,
+      "total": total,
+      "payment_method": payment_method,
+      "latitude": latitude,
+      "longitude": longitude,
+      'status': "waiting",
+      "bukti": await MultipartFile.fromFile(image!.path, filename: image.name),
+    });
+
+    try {
+      var response = await dio.post(url + 'insertEmergencyOrder',
+          data: formData,
+          options: Options(
+              followRedirects: false, validateStatus: (status) => true));
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          Future.delayed(const Duration(seconds: 1), () {
+            ArtSweetAlert.show(
+                context: Get.context!,
+                artDialogArgs: ArtDialogArgs(
+                  type: ArtSweetAlertType.success,
+                  title: 'Berhasil',
+                  text: 'Pesanan berhasil dibuat',
+                ));
+          }).then((value) => Get.off(() => const BuatPesananDarurat()));
+        }
+      }
+    } catch (e) {
       ArtSweetAlert.show(
           context: Get.context!,
           artDialogArgs: ArtDialogArgs(
@@ -87,7 +143,6 @@ class OrderService extends GetxController {
         return null;
       }
     } catch (e) {
-      print(e);
       ArtSweetAlert.show(
           context: Get.context!,
           artDialogArgs: ArtDialogArgs(
@@ -95,12 +150,48 @@ class OrderService extends GetxController {
               title: 'Error',
               text: 'Terjadi kesalahan saat memuat pesanan',
               confirmButtonText: 'OK',
-              onConfirm: () async {
-                await getOrderByUser(userId: userId);
-              },
-              onDispose: () async {
-                await getOrderByUser(userId: userId);
-              },
+              // onConfirm: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              // onDispose: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              confirmButtonColor: RawatinColorTheme.orange));
+    }
+  }
+
+  Future getLastPesananSelesai({
+    required String userId,
+  }) async {
+    var data = {
+      'user_id': userId,
+    };
+    try {
+      var response = await dio.post(url + 'getLastPesananSelesai', data: data);
+
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      ArtSweetAlert.show(
+          context: Get.context!,
+          artDialogArgs: ArtDialogArgs(
+              type: ArtSweetAlertType.danger,
+              title: 'Error',
+              text: 'Terjadi kesalahan saat memuat pesanan',
+              confirmButtonText: 'OK',
+              // onConfirm: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              // onDispose: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
               confirmButtonColor: RawatinColorTheme.orange));
     }
   }
@@ -116,7 +207,6 @@ class OrderService extends GetxController {
 
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          // print(json.encode(json.decode(response.data['data'])));
           return response;
         } else {
           return [];
@@ -125,7 +215,6 @@ class OrderService extends GetxController {
         return [];
       }
     } catch (e) {
-      print(e);
       ArtSweetAlert.show(
           context: Get.context!,
           artDialogArgs: ArtDialogArgs(
@@ -133,12 +222,12 @@ class OrderService extends GetxController {
               title: 'Error',
               text: 'Terjadi kesalahan saat memuat pesanan',
               confirmButtonText: 'OK',
-              onConfirm: () async {
-                await getOrderByUser(userId: userId);
-              },
-              onDispose: () async {
-                await getOrderByUser(userId: userId);
-              },
+              // onConfirm: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              // onDispose: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
               confirmButtonColor: RawatinColorTheme.orange));
     }
   }
@@ -154,7 +243,6 @@ class OrderService extends GetxController {
 
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          // print(json.encode(json.decode(response.data['data'])));
           return response;
         } else {
           return [];
@@ -163,7 +251,6 @@ class OrderService extends GetxController {
         return [];
       }
     } catch (e) {
-      print(e);
       ArtSweetAlert.show(
           context: Get.context!,
           artDialogArgs: ArtDialogArgs(
@@ -171,12 +258,12 @@ class OrderService extends GetxController {
               title: 'Error',
               text: 'Terjadi kesalahan saat memuat pesanan',
               confirmButtonText: 'OK',
-              onConfirm: () async {
-                await getOrderByUser(userId: userId);
-              },
-              onDispose: () async {
-                await getOrderByUser(userId: userId);
-              },
+              // onConfirm: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              // onDispose: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
               confirmButtonColor: RawatinColorTheme.orange));
     }
   }
@@ -192,7 +279,6 @@ class OrderService extends GetxController {
 
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          // print(json.encode(json.decode(response.data['data'])));
           return response;
         } else {
           return [];
@@ -208,12 +294,12 @@ class OrderService extends GetxController {
               title: 'Error',
               text: 'Terjadi kesalahan saat memuat pesanan',
               confirmButtonText: 'OK',
-              onConfirm: () async {
-                await getOrderByUser(userId: userId);
-              },
-              onDispose: () async {
-                await getOrderByUser(userId: userId);
-              },
+              // onConfirm: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
+              // onDispose: () async {
+              //   await getOrderByUser(userId: userId);
+              // },
               confirmButtonColor: RawatinColorTheme.orange));
     }
   }
@@ -324,8 +410,6 @@ class OrderService extends GetxController {
       'rating': rating,
       'customer_notes': review,
     };
-
-    print(data);
 
     try {
       var response = await dio.put(url + 'submitReview', data: data);

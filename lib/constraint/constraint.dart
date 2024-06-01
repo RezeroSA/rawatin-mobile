@@ -1,3 +1,3 @@
-String url = 'http://127.0.0.1:8000/api/';
-String onlineAssets = 'http://127.0.0.1:8000';
+String url = 'https://apirawatin.pobo.co.id/api/';
+String onlineAssets = 'https://apirawatin.pobo.co.id';
 String apiKey = 'AIzaSyDcjwcFakdZBsMzC6K02d6PCgOgAGvhFl0';

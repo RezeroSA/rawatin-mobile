@@ -1,9 +1,46 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:rawatin/pages/buat_pesanan/index.dart';
+import 'package:rawatin/pages/buat_pesanan_darurat/index.dart';
 import 'package:rawatin/pages/emergency_order/index.dart';
+import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 
-class EmergencyPage extends StatelessWidget {
+class EmergencyPage extends StatefulWidget {
   const EmergencyPage({super.key});
+
+  @override
+  State<EmergencyPage> createState() => _EmergencyPageState();
+}
+
+class _EmergencyPageState extends State<EmergencyPage> {
+  OrderService _orderService = Get.put(OrderService());
+  final box = GetStorage();
+
+  bool _isOrderExist = false;
+  String orderType = '';
+
+  Future<void> _getOrder() async {
+    final res =
+        await _orderService.getOrderByUser(userId: box.read('phoneNum'));
+
+    if (res != null) {
+      setState(() {
+        _isOrderExist = true;
+        orderType = res['order']['name'];
+      });
+    }
+
+    print(res);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getOrder();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +71,28 @@ class EmergencyPage extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (_) => const EmergencyOrder(),
-                    ),
-                  );
+                  // Navigator.of(context, rootNavigator: true).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => const EmergencyOrder(),
+                  //   ),
+                  // );
+
+                  if (_isOrderExist) {
+                    if (orderType.contains('Darurat')) {
+                      Get.to(() => BuatPesananDarurat());
+                    } else {
+                      ArtSweetAlert.show(
+                          context: context,
+                          artDialogArgs: ArtDialogArgs(
+                              type: ArtSweetAlertType.warning,
+                              title: 'Oops...',
+                              text:
+                                  'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
+                              confirmButtonColor: RawatinColorTheme.orange));
+                    }
+                  } else {
+                    Get.to(() => const EmergencyOrder());
+                  }
                 },
                 icon: Image(
                   image: AssetsLocation.imageLocation('emergency'),

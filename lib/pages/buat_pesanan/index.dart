@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:money_formatter/money_formatter.dart';
-import 'package:rawatin/pages/home/home_page.dart';
 import 'package:rawatin/pages/home/index.dart';
 import 'package:rawatin/pages/pesanan_selesai/index.dart';
 import 'package:rawatin/service/order.dart';
@@ -47,6 +46,9 @@ class _BuatPesananState extends State<BuatPesanan> {
         await _orderService.getOrderByUser(userId: box.read('phoneNum'));
 
     if (res != null) {
+      if (res['order']['status'] == 'complete') {
+        Get.off(PesananSelesai());
+      }
       List<Placemark> placemarks = await placemarkFromCoordinates(
         res['order']['latitude'],
         res['order']['longitude'],
@@ -72,6 +74,8 @@ class _BuatPesananState extends State<BuatPesanan> {
             placemarks[0].administrativeArea!;
         _isLoading = false;
       });
+    } else {
+      Get.off(PesananSelesai());
     }
   }
 
@@ -366,14 +370,14 @@ class _BuatPesananState extends State<BuatPesanan> {
                                           children: [
                                             TextButton(
                                               onPressed: () {
-                                                Navigator.of(context,
-                                                        rootNavigator: true)
-                                                    .push(
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        const PesananSelesai(),
-                                                  ),
-                                                );
+                                                // Navigator.of(context,
+                                                //         rootNavigator: true)
+                                                //     .push(
+                                                //   MaterialPageRoute(
+                                                //     builder: (_) =>
+                                                //         const PesananSelesai(),
+                                                //   ),
+                                                // );
                                               },
                                               style: const ButtonStyle(
                                                 splashFactory:
@@ -884,14 +888,14 @@ class _BuatPesananState extends State<BuatPesanan> {
                                         children: [
                                           TextButton(
                                             onPressed: () {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .push(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const PesananSelesai(),
-                                                ),
-                                              );
+                                              // Navigator.of(context,
+                                              //         rootNavigator: true)
+                                              //     .push(
+                                              //   MaterialPageRoute(
+                                              //     builder: (_) =>
+                                              //         const PesananSelesai(),
+                                              //   ),
+                                              // );
                                             },
                                             style: const ButtonStyle(
                                               splashFactory:

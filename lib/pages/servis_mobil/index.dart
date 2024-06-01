@@ -1,64 +1,51 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:dio/dio.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:rawatin/constraint/constraint.dart';
-import 'package:rawatin/pages/buat_pesanan_darurat/index.dart';
 import 'package:rawatin/pages/cari_alamat/index.dart';
-import 'package:rawatin/pages/cari_alamat_emergency/index.dart';
 import 'package:rawatin/pages/payment_method/index.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
-import 'dart:io';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class EmergencyOrder extends StatefulWidget {
-  const EmergencyOrder({super.key});
+class ServisMobil extends StatefulWidget {
+  const ServisMobil({super.key});
 
   @override
-  State<EmergencyOrder> createState() => _EmergencyOrderState();
+  State<ServisMobil> createState() => _ServisMobilState();
 }
 
-class _EmergencyOrderState extends State<EmergencyOrder> {
-  String services = 'Bantuan Darurat';
-  String tipeLayanan = 'Kecelakaan';
-  bool isKecelakaan = true;
-  bool isBanBocor = false;
-  bool isMesinMogok = false;
-  bool isTersesat = false;
-  bool _isLoading = false;
-  String location = '';
-  double tarifLayanan = 100000;
+class _ServisMobilState extends State<ServisMobil> {
+  String service = 'Servis Mobil';
+  String tipeLayanan = 'Tune Up';
+  bool isTuneUp = true;
+  bool isBerkala = false;
+  bool isBodi = false;
+
+  double tarifLayanan = 500000;
   double tarif = 0;
   double total = 0;
   String metodePembayaran = '';
+
+  bool _isLoading = true;
   LatLng _latLong = LatLng(0, 0);
+  String location = '';
   GoogleMapController? _mapController;
   final dio = Dio();
 
-  static const LatLng _initialCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
-  static const LatLng _uibCoordinate =
-      LatLng(1.119566826789065, 104.00304630763641);
-
-  XFile? image;
-
-  Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
-
-    setState(() {
-      image = img;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _getLocation().then((value) => _getLocationCoordinate()
+        .then((value) => _countDistance(value))
+        .then((value) => _hitungTotal()));
   }
 
   Future<void> _getLocationUpdate(position) async {
@@ -167,99 +154,13 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getLocation().then((value) => _getLocationCoordinate()
-        .then((value) => _countDistance(value))
-        .then((value) => _hitungTotal()));
-  }
-
   final OrderService _orderService = Get.put(OrderService());
 
-  void myAlert() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: RawatinColorTheme.white,
-            surfaceTintColor: RawatinColorTheme.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text(
-              'Pilih media yang akan dipilih',
-              style: TextStyle(fontFamily: 'Arial Rounded', fontSize: 20),
-            ),
-            content: SizedBox(
-              height: MediaQuery.of(context).size.height / 8,
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: RawatinColorTheme.white,
-                      surfaceTintColor: RawatinColorTheme.white,
-                      splashFactory: NoSplash.splashFactory,
-                    ),
-                    //if user click this button, user can upload image from gallery
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.gallery);
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.image,
-                          color: RawatinColorTheme.black,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Dari Galeri',
-                          style: TextStyle(color: RawatinColorTheme.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: RawatinColorTheme.white,
-                      surfaceTintColor: RawatinColorTheme.white,
-                      splashFactory: NoSplash.splashFactory,
-                    ),
-                    //if user click this button, user can upload image from gallery
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getImage(ImageSource.camera);
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.camera_alt_outlined,
-                          color: RawatinColorTheme.black,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Dari Kamera',
-                          style: TextStyle(color: RawatinColorTheme.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  final ImagePicker picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
     String phoneNum = box.read('phoneNum') ?? '';
+
     MoneyFormatter fmf = MoneyFormatter(
         amount: tarif,
         settings: MoneyFormatterSettings(
@@ -287,7 +188,7 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
         surfaceTintColor: RawatinColorTheme.white,
         backgroundColor: RawatinColorTheme.white,
         title: const Text(
-          'Bantuan Darurat',
+          'Servis Mobil',
           style: TextStyle(
             fontSize: 24,
             fontFamily: 'Arial Rounded',
@@ -304,130 +205,6 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               const SizedBox(
                 child: Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          style: TextStyle(
-                              color: RawatinColorTheme.black,
-                              fontFamily: 'Arial Rounded',
-                              fontSize: 20),
-                          text: 'Bukti keadaan darurat',
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              image != null
-                  ? GestureDetector(
-                      onTap: () {
-                        myAlert();
-                      },
-                      child: DottedBorder(
-                        color: RawatinColorTheme.red,
-                        borderType: BorderType.RRect,
-                        strokeWidth: 1,
-                        dashPattern: const [8, 4],
-                        radius: const Radius.circular(10),
-                        strokeCap: StrokeCap.round,
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: Container(
-                            height: 250,
-                            width: double.maxFinite,
-                            decoration: BoxDecoration(
-                              color: RawatinColorTheme.white,
-                              borderRadius: BorderRadius.circular(10),
-                              // border: Border.all(width: 1, color: RawatinColorTheme.red),
-                            ),
-                            child: Image.file(
-                              //to show image, you type like this.
-                              File(image!.path),
-                              fit: BoxFit.fitHeight,
-                              width: MediaQuery.of(context).size.width,
-                              height: 300,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () {
-                        myAlert();
-                      },
-                      child: DottedBorder(
-                        color: RawatinColorTheme.red,
-                        borderType: BorderType.RRect,
-                        strokeWidth: 1,
-                        dashPattern: const [8, 4],
-                        radius: const Radius.circular(10),
-                        strokeCap: StrokeCap.round,
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          child: Container(
-                            height: 250,
-                            width: double.maxFinite,
-                            decoration: BoxDecoration(
-                              color: RawatinColorTheme.white,
-                              borderRadius: BorderRadius.circular(10),
-                              // border: Border.all(width: 1, color: RawatinColorTheme.red),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    FontAwesomeIcons.plus,
-                                    color: RawatinColorTheme.red,
-                                  ),
-                                  Text(
-                                    'Tambah bukti',
-                                    style:
-                                        TextStyle(color: RawatinColorTheme.red),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-              const SizedBox(
-                height: 5,
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    const TextSpan(
-                      style: TextStyle(
-                        color: RawatinColorTheme.black,
-                        fontSize: 10,
-                      ),
-                      text:
-                          'Kami membutuhkan bukti bahwa keadaan darurat benar terjadi agar tidak terjadi order fiktif. ',
-                    ),
-                    TextSpan(
-                        style: const TextStyle(
-                            color: RawatinColorTheme.red, fontSize: 10),
-                        text: 'Pelajari hal ini...',
-                        recognizer: TapGestureRecognizer()..onTap = () {}),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               RichText(
                 text: const TextSpan(
                   children: [
@@ -435,8 +212,8 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                       style: TextStyle(
                           color: RawatinColorTheme.black,
                           fontFamily: 'Arial Rounded',
-                          fontSize: 15),
-                      text: 'Bantuan darurat apa yang kamu butuhkan?',
+                          fontSize: 20),
+                      text: 'Pilih Layanan',
                     ),
                   ],
                 ),
@@ -447,13 +224,14 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: isKecelakaan
+                decoration: isTuneUp
                     ? BoxDecoration(
-                        color: RawatinColorTheme.red,
+                        color: RawatinColorTheme.secondaryOrange,
                         borderRadius: BorderRadius.circular(10))
                     : BoxDecoration(
                         color: RawatinColorTheme.white,
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -465,65 +243,90 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                     //   ),
                     // );
                     setState(() {
-                      tarifLayanan = 100000;
-                      tipeLayanan = 'Kecelakaan';
-                      isKecelakaan = true;
-                      isBanBocor = false;
-                      isMesinMogok = false;
-                      isTersesat = false;
+                      tipeLayanan = 'Tune Up';
+                      tarifLayanan = 500000;
+                      isTuneUp = true;
+                      isBerkala = false;
+                      isBodi = false;
                     });
                     _hitungTotal();
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             SizedBox(
-                                width: 55,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 15),
-                                  child: Image(
-                                    image: isKecelakaan
-                                        ? AssetsLocation.imageLocation(
-                                            'kecelakaan-putih')
-                                        : AssetsLocation.imageLocation(
-                                            'kecelakaan'),
-                                    height: 40,
-                                    width: 40,
+                              width: 55,
+                              child: Stack(
+                                alignment: Alignment.centerLeft,
+                                children: [
+                                  Positioned(
+                                    bottom: 15,
+                                    child: Icon(
+                                      FontAwesomeIcons.arrowTurnUp,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
                                   ),
-                                )),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 15, top: 20),
+                                    child: Icon(
+                                      FontAwesomeIcons.car,
+                                      color: RawatinColorTheme.orange,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             SizedBox(
-                              width: 260,
+                              width: 170,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Kecelakaan',
+                                    'Tune Up',
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
                                         fontSize: 16,
-                                        color: isKecelakaan
-                                            ? RawatinColorTheme.white
-                                            : RawatinColorTheme.black,
+                                        color: RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      'Kendaraan saya mengalami kecelakaan dan butuh pertolongan sekarang juga',
-                                      style: TextStyle(
-                                          color: isKecelakaan
-                                              ? RawatinColorTheme.white
-                                              : RawatinColorTheme.black,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
+                                  Text(
+                                    'Menjaga performa mesin mobil kamu tetap optimal',
+                                    style: TextStyle(
+                                        color: RawatinColorTheme.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12),
                                   ),
                                 ],
                               ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rp 500.000',
+                              style: TextStyle(
+                                  fontFamily: 'Arial Rounded',
+                                  fontSize: 18,
+                                  color: RawatinColorTheme.black,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              'Rp 750.000',
+                              style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: RawatinColorTheme.red,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10),
                             ),
                           ],
                         ),
@@ -532,19 +335,17 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 2.5,
-              ),
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: isBanBocor
+                decoration: isBerkala
                     ? BoxDecoration(
-                        color: RawatinColorTheme.red,
+                        color: RawatinColorTheme.secondaryOrange,
                         borderRadius: BorderRadius.circular(10))
                     : BoxDecoration(
                         color: RawatinColorTheme.white,
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -556,65 +357,90 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                     //   ),
                     // );
                     setState(() {
-                      tipeLayanan = 'Ban Bocor';
-                      tarifLayanan = 125000;
-                      isKecelakaan = false;
-                      isBanBocor = true;
-                      isMesinMogok = false;
-                      isTersesat = false;
+                      tipeLayanan = 'Servis Berkala';
+                      tarifLayanan = 650000;
+                      isTuneUp = false;
+                      isBerkala = true;
+                      isBodi = false;
                     });
                     _hitungTotal();
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             SizedBox(
-                                width: 55,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 15),
-                                  child: Image(
-                                    image: isBanBocor
-                                        ? AssetsLocation.imageLocation(
-                                            'ban-bocor-putih')
-                                        : AssetsLocation.imageLocation(
-                                            'ban-bocor'),
-                                    height: 40,
-                                    width: 40,
+                              width: 55,
+                              child: Stack(
+                                alignment: Alignment.centerLeft,
+                                children: [
+                                  Positioned(
+                                    bottom: 15,
+                                    child: Icon(
+                                      FontAwesomeIcons.arrowsSpin,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
                                   ),
-                                )),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 15, top: 20),
+                                    child: Icon(
+                                      FontAwesomeIcons.car,
+                                      color: RawatinColorTheme.orange,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             SizedBox(
-                              width: 260,
+                              width: 170,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Ban Bocor',
+                                    'Servis Berkala',
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
-                                        fontSize: 16,
-                                        color: isBanBocor
-                                            ? RawatinColorTheme.white
-                                            : RawatinColorTheme.black,
+                                        fontSize: 14,
+                                        color: RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      'Ban saya bocor dan tidak ada bengkel terdekat. Tolong perbaiki ban saya',
-                                      style: TextStyle(
-                                          color: isBanBocor
-                                              ? RawatinColorTheme.white
-                                              : RawatinColorTheme.black,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
+                                  Text(
+                                    'Ganti oli, tambah angin, dan perawatan lainnya',
+                                    style: TextStyle(
+                                        color: RawatinColorTheme.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12),
                                   ),
                                 ],
                               ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rp 650.000',
+                              style: TextStyle(
+                                  fontFamily: 'Arial Rounded',
+                                  fontSize: 18,
+                                  color: RawatinColorTheme.black,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              'Rp 850.000',
+                              style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: RawatinColorTheme.red,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10),
                             ),
                           ],
                         ),
@@ -623,180 +449,107 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 2.5,
-              ),
               Container(
                 height: 80,
                 width: double.maxFinite,
-                decoration: isMesinMogok
+                decoration: isBodi
                     ? BoxDecoration(
-                        color: RawatinColorTheme.red,
+                        color: RawatinColorTheme.secondaryOrange,
                         borderRadius: BorderRadius.circular(10))
                     : BoxDecoration(
                         color: RawatinColorTheme.white,
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                 child: TextButton(
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                   ),
                   onPressed: () {
-                    // Navigator.of(context, rootNavigator: true).push(
-                    //   MaterialPageRoute(
-                    //     builder: (_) => const OrderPageMain(),
-                    //   ),
-                    // );
                     setState(() {
-                      tipeLayanan = 'Mesin Mogok';
-                      tarifLayanan = 200000;
-                      isKecelakaan = false;
-                      isBanBocor = false;
-                      isMesinMogok = true;
-                      isTersesat = false;
+                      tipeLayanan = 'Servis Bodi dan Cat';
+                      tarifLayanan = 750000;
+                      isTuneUp = false;
+                      isBerkala = false;
+                      isBodi = true;
                     });
                     _hitungTotal();
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             SizedBox(
-                                width: 55,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 15),
-                                  child: Image(
-                                    image: isMesinMogok
-                                        ? AssetsLocation.imageLocation(
-                                            'mesin-mogok-putih')
-                                        : AssetsLocation.imageLocation(
-                                            'mesin-mogok'),
-                                    height: 40,
-                                    width: 40,
+                              width: 55,
+                              child: Stack(
+                                alignment: Alignment.centerLeft,
+                                children: [
+                                  Positioned(
+                                    bottom: 15,
+                                    child: Icon(
+                                      FontAwesomeIcons.wandMagicSparkles,
+                                      size: 25,
+                                      color: RawatinColorTheme.black,
+                                    ),
                                   ),
-                                )),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 15, top: 20),
+                                    child: Icon(
+                                      FontAwesomeIcons.car,
+                                      color: RawatinColorTheme.orange,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             SizedBox(
-                              width: 260,
+                              width: 170,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Mesin Mogok',
+                                    'Servis Bodi dan Cat',
                                     style: TextStyle(
                                         fontFamily: 'Arial Rounded',
-                                        fontSize: 16,
-                                        color: isMesinMogok
-                                            ? RawatinColorTheme.white
-                                            : RawatinColorTheme.black,
+                                        fontSize: 14,
+                                        color: RawatinColorTheme.black,
                                         fontWeight: FontWeight.w400),
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      'Kendaraan saya mati tiba-tiba dan tidak ada alat darurat untuk memperbaikinya',
-                                      style: TextStyle(
-                                          color: isMesinMogok
-                                              ? RawatinColorTheme.white
-                                              : RawatinColorTheme.black,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
+                                  Text(
+                                    'Poles bodi mobil kamu sampe kinclong',
+                                    style: TextStyle(
+                                        color: RawatinColorTheme.black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12),
                                   ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 2.5,
-              ),
-              Container(
-                height: 80,
-                width: double.maxFinite,
-                decoration: isTersesat
-                    ? BoxDecoration(
-                        color: RawatinColorTheme.red,
-                        borderRadius: BorderRadius.circular(10))
-                    : BoxDecoration(
-                        color: RawatinColorTheme.white,
-                        borderRadius: BorderRadius.circular(10)),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () {
-                    // Navigator.of(context, rootNavigator: true).push(
-                    //   MaterialPageRoute(
-                    //     builder: (_) => const OrderPageMain(),
-                    //   ),
-                    // );
-                    setState(() {
-                      tipeLayanan = 'Tersesat';
-                      tarifLayanan = 50000;
-                      isKecelakaan = false;
-                      isBanBocor = false;
-                      isMesinMogok = false;
-                      isTersesat = true;
-                    });
-                    _hitungTotal();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                                width: 55,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 15),
-                                  child: Image(
-                                    image: isTersesat
-                                        ? AssetsLocation.imageLocation(
-                                            'tersesat-putih')
-                                        : AssetsLocation.imageLocation(
-                                            'tersesat'),
-                                    height: 40,
-                                    width: 40,
-                                  ),
-                                )),
-                            SizedBox(
-                              width: 260,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Tersesat',
-                                    style: TextStyle(
-                                        fontFamily: 'Arial Rounded',
-                                        fontSize: 16,
-                                        color: isTersesat
-                                            ? RawatinColorTheme.white
-                                            : RawatinColorTheme.black,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'Saya tersesat dan tidak tahu kemana arah yang harus saya lalui',
-                                      style: TextStyle(
-                                          color: isTersesat
-                                              ? RawatinColorTheme.white
-                                              : RawatinColorTheme.black,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            Text(
+                              'Rp 750.000',
+                              style: TextStyle(
+                                  fontFamily: 'Arial Rounded',
+                                  fontSize: 18,
+                                  color: RawatinColorTheme.black,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              'Rp 1.000.000',
+                              style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: RawatinColorTheme.red,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10),
                             ),
                           ],
                         ),
@@ -819,7 +572,7 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                               color: RawatinColorTheme.black,
                               fontFamily: 'Arial Rounded',
                               fontSize: 20),
-                          text: 'Dimana lokasi kamu?',
+                          text: 'Dimana kami jemput?',
                         ),
                       ],
                     ),
@@ -844,7 +597,7 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                           });
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: RawatinColorTheme.red,
+                      backgroundColor: RawatinColorTheme.orange,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
@@ -862,9 +615,10 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                   height: 275,
                   width: double.maxFinite,
                   decoration: BoxDecoration(
-                    color: RawatinColorTheme.red.withOpacity(0.2),
+                    color: RawatinColorTheme.secondaryOrange,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1, color: RawatinColorTheme.red),
+                    border:
+                        Border.all(width: 1, color: RawatinColorTheme.orange),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(15),
@@ -930,8 +684,8 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                             width: double.maxFinite,
                             height: 2,
                             child: const DecoratedBox(
-                              decoration:
-                                  BoxDecoration(color: RawatinColorTheme.red),
+                              decoration: BoxDecoration(
+                                  color: RawatinColorTheme.orange),
                             ),
                           ),
                         ),
@@ -983,9 +737,10 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                   height: 210,
                   width: double.maxFinite,
                   decoration: BoxDecoration(
-                    color: RawatinColorTheme.red.withOpacity(0.2),
+                    color: RawatinColorTheme.secondaryOrange,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 1, color: RawatinColorTheme.red),
+                    border:
+                        Border.all(width: 1, color: RawatinColorTheme.orange),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(15),
@@ -1020,8 +775,7 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                                           style: TextStyle(
                                               color: RawatinColorTheme.black,
                                               fontSize: 14),
-                                          text:
-                                              'Bantuan Darurat - ${tipeLayanan}',
+                                          text: 'Servis Mobil - ${tipeLayanan}',
                                         ),
                                       ],
                                     ),
@@ -1146,7 +900,7 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
                           height: 2,
                           child: DecoratedBox(
                             decoration:
-                                BoxDecoration(color: RawatinColorTheme.red),
+                                BoxDecoration(color: RawatinColorTheme.orange),
                           ),
                         ),
                         Container(
@@ -1216,55 +970,43 @@ class _EmergencyOrderState extends State<EmergencyOrder> {
               ),
               TextButton(
                 onPressed: () {
-                  if (image == null) {
-                    ArtSweetAlert.show(
-                        context: context,
-                        artDialogArgs: ArtDialogArgs(
-                            type: ArtSweetAlertType.warning,
-                            title: "Oops...",
-                            text: "Kamu belum menambahkan bukti foto",
-                            confirmButtonText: "Oke",
-                            confirmButtonColor: RawatinColorTheme.red));
-                  } else if (metodePembayaran == '') {
+                  if (metodePembayaran == '') {
                     ArtSweetAlert.show(
                         context: context,
                         artDialogArgs: ArtDialogArgs(
                             type: ArtSweetAlertType.warning,
                             title: 'Oops...',
                             text: 'Kamu belum memilih metode pembayaran',
-                            confirmButtonColor: RawatinColorTheme.red));
+                            confirmButtonColor: RawatinColorTheme.orange));
                   } else {
                     () async {
-                      await _orderService.insertEmergencyOrder(
+                      await _orderService.insertOrder(
                           userId: phoneNum,
-                          serviceId: tipeLayanan == 'Kecelakaan'
-                              ? 11
-                              : tipeLayanan == 'Ban Bocor'
-                                  ? 12
-                                  : tipeLayanan == 'Mesin Mogok'
-                                      ? 13
-                                      : 14,
+                          serviceId: tipeLayanan == 'Tune Up'
+                              ? 8
+                              : tipeLayanan == 'Servis Berkala'
+                                  ? 9
+                                  : 10,
                           service_fee: tarifLayanan,
                           transport_fee: tarif,
                           total: total,
                           payment_method: metodePembayaran,
                           latitude: _latLong.latitude,
-                          longitude: _latLong.longitude,
-                          image: image);
+                          longitude: _latLong.longitude);
                     }();
                   }
                 },
                 style: TextButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),
-                  backgroundColor: RawatinColorTheme.red,
+                  backgroundColor: RawatinColorTheme.orange,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
-                child: Text('Kirim Layanan Darurat',
+                child: Text('Buat Pesanan',
                     style: RawatinColorTheme.secondaryTextTheme.titleSmall),
               ),
               const SizedBox(
-                height: 80,
+                height: 60,
               ),
             ],
           ),

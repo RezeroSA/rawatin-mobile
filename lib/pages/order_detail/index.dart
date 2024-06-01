@@ -10,7 +10,6 @@ import 'package:money_formatter/money_formatter.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:typing_text/typing_text.dart';
 
 class OrderDetail extends StatefulWidget {
   OrderDetail({super.key, required this.orderId});

@@ -6,6 +6,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:rawatin/pages/buat_pesanan/index.dart';
 import 'package:rawatin/pages/cuci_mobil/index.dart';
 import 'package:rawatin/pages/cuci_motor/index.dart';
+import 'package:rawatin/pages/servis_mobil/index.dart';
+import 'package:rawatin/pages/servis_motor/index.dart';
 import 'package:rawatin/service/authentication.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
@@ -93,9 +95,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RawatinColorTheme.white,
-      // body: Container(
-      //   child: buildGridView(),
-      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -207,12 +206,55 @@ class _HomePageState extends State<HomePage> {
                             'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
                         confirmButtonColor: RawatinColorTheme.orange));
               }
+            } else if (orderType == 'Servis Motor - Tune Up' ||
+                orderType == 'Servis Motor - Servis Berkala' ||
+                orderType == 'Servis Motor - Bodi dan Cat') {
+              if (service == 'Servis Motor') {
+                Get.to(() => BuatPesanan());
+              } else {
+                ArtSweetAlert.show(
+                    context: context,
+                    artDialogArgs: ArtDialogArgs(
+                        type: ArtSweetAlertType.warning,
+                        title: 'Oops...',
+                        text:
+                            'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
+                        confirmButtonColor: RawatinColorTheme.orange));
+              }
+            } else if (orderType == 'Servis Mobil - Tune Up' ||
+                orderType == 'Servis Mobil - Servis Berkala' ||
+                orderType == 'Servis Mobil - Bodi dan Cat') {
+              if (service == 'Servis Mobil') {
+                Get.to(() => BuatPesanan());
+              } else {
+                ArtSweetAlert.show(
+                    context: context,
+                    artDialogArgs: ArtDialogArgs(
+                        type: ArtSweetAlertType.warning,
+                        title: 'Oops...',
+                        text:
+                            'Kamu tidak bisa membuat orderan baru karena memiliki orderan aktif atau dalam proses',
+                        confirmButtonColor: RawatinColorTheme.orange));
+              }
+            } else if (orderType.contains('Darurat')) {
+              ArtSweetAlert.show(
+                  context: context,
+                  artDialogArgs: ArtDialogArgs(
+                      type: ArtSweetAlertType.warning,
+                      title: 'Oops...',
+                      text:
+                          'Kamu tidak bisa membuat orderan baru karena memiliki orderan darurat yang aktif atau dalam proses',
+                      confirmButtonColor: RawatinColorTheme.orange));
             }
           } else {
             if (service == 'Cuci Mobil') {
               Get.to(() => CuciMobil());
             } else if (service == 'Cuci Motor') {
               Get.to(() => CuciMotor());
+            } else if (service == 'Servis Motor') {
+              Get.to(() => ServisMotor());
+            } else if (service == 'Servis Mobil') {
+              Get.to(() => ServisMobil());
             } else {
               ArtSweetAlert.show(
                   context: context,

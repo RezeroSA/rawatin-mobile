@@ -8,7 +8,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:rawatin/constraint/constraint.dart';
-import 'package:rawatin/pages/buat_pesanan/index.dart';
 import 'package:rawatin/pages/cari_alamat/index.dart';
 import 'package:rawatin/pages/payment_method/index.dart';
 import 'package:rawatin/service/order.dart';
@@ -158,7 +157,6 @@ class _CuciMobilState extends State<CuciMobil> {
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
-    String token = box.read('token') ?? '';
     String phoneNum = box.read('phoneNum') ?? '';
     MoneyFormatter fmf = MoneyFormatter(
         amount: tarif,
@@ -467,14 +465,6 @@ class _CuciMobilState extends State<CuciMobil> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      // setState(() {
-                      //   _isLoading = !_isLoading;
-                      // });
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (_) => const CariAlamat(),
-                      //   ),
-                      // );
                       await Get.to(() => CariAlamat(
                             latLong: _latLong,
                           ))?.then((value) => {
@@ -624,133 +614,6 @@ class _CuciMobilState extends State<CuciMobil> {
                   ),
                 ),
               ),
-              /////////
-              ///
-              ///
-              ///
-              ///
-              ///
-              ///
-              ///
-              ///
-              ///
-              // Container(
-              //   height: 275,
-              //   width: double.maxFinite,
-              //   decoration: BoxDecoration(
-              //     color: RawatinColorTheme.secondaryOrange,
-              //     borderRadius: BorderRadius.circular(10),
-              //     border: Border.all(width: 1, color: RawatinColorTheme.orange),
-              //   ),
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(15),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         SizedBox(
-              //           width: double.maxFinite,
-              //           height: 170,
-              //           child: ClipRRect(
-              //             borderRadius: BorderRadius.circular(10),
-              //             child: AbsorbPointer(
-              //               absorbing: true,
-              //               child: _isLoading
-              //                   ? Skeletonizer(
-              //                       enabled: _isLoading,
-              //                       child: ListView.builder(
-              //                         itemCount: 7,
-              //                         itemBuilder: (context, index) {
-              //                           return Card(
-              //                             child: ListTile(
-              //                               title: Text(
-              //                                   'Item number $index as title'),
-              //                               subtitle:
-              //                                   const Text('Subtitle here'),
-              //                               trailing: const Icon(Icons.ac_unit),
-              //                             ),
-              //                           );
-              //                         },
-              //                       ),
-              //                     )
-              //                   : GoogleMap(
-              //                       initialCameraPosition: CameraPosition(
-              //                         target: _latLong,
-              //                         zoom: 17,
-              //                       ),
-              //                       myLocationButtonEnabled: false,
-              //                       zoomControlsEnabled: false,
-              //                       markers: {
-              //                         Marker(
-              //                             markerId: MarkerId("demo"),
-              //                             icon: BitmapDescriptor.defaultMarker,
-              //                             position: _latLong),
-              //                       },
-              //                     ),
-              //             ),
-              //           ),
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.only(top: 10),
-              //           child: RichText(
-              //             text: const TextSpan(
-              //               children: [
-              //                 TextSpan(
-              //                   style: TextStyle(
-              //                       color: RawatinColorTheme.black,
-              //                       fontFamily: 'Arial Rounded',
-              //                       fontSize: 18),
-              //                   text: 'Universitas Internasional Batam',
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.only(top: 10),
-              //           width: double.maxFinite,
-              //           height: 2,
-              //           child: const DecoratedBox(
-              //             decoration:
-              //                 BoxDecoration(color: RawatinColorTheme.orange),
-              //           ),
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.only(top: 10),
-              //           child: Row(
-              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //             children: [
-              //               RichText(
-              //                 text: const TextSpan(
-              //                   children: [
-              //                     TextSpan(
-              //                       style: TextStyle(
-              //                           color: RawatinColorTheme.black,
-              //                           fontSize: 15),
-              //                       text: 'Biaya transport petugas',
-              //                     ),
-              //                   ],
-              //                 ),
-              //               ),
-              //               RichText(
-              //                 text: const TextSpan(
-              //                   children: [
-              //                     TextSpan(
-              //                       style: TextStyle(
-              //                           color: RawatinColorTheme.black,
-              //                           fontFamily: 'Arial Rounded',
-              //                           fontSize: 15),
-              //                       text: 'Rp 8.000',
-              //                     ),
-              //                   ],
-              //                 ),
-              //               ),
-              //             ],
-              //           ),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
               const SizedBox(
                 height: 15,
               ),
@@ -994,16 +857,6 @@ class _CuciMobilState extends State<CuciMobil> {
               ),
               TextButton(
                 onPressed: () async {
-                  // print('User : ${service}');
-                  // print('Jenis Layanan : ${service}');
-                  // print('Tipe Layanan : ${tipeLayanan}');
-                  // print('Transport Petugas : ${tarif}');
-                  // print('Tarif Layanan : ${tarifLayanan}');
-                  // print('Total : ${total}');
-                  // print('Metode Pembayaran : ${metodePembayaran}');
-                  // print('Latitude : ${_latLong.latitude}');
-                  // print('Longitude : ${_latLong.longitude}');
-
                   if (metodePembayaran == '') {
                     ArtSweetAlert.show(
                         context: context,
@@ -1025,8 +878,6 @@ class _CuciMobilState extends State<CuciMobil> {
                           longitude: _latLong.longitude);
                     }();
                   }
-
-                  // print(box.getKeys());
                 },
                 style: TextButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),

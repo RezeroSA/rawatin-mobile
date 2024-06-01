@@ -234,7 +234,7 @@ class _OrderPageMainState extends State<OrderPageMain>
                                 Text(
                                   order['service_name'],
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color: RawatinColorTheme.black,
                                       fontFamily: "Arial Rounded"),
                                 ),
@@ -389,7 +389,7 @@ class _OrderPageMainState extends State<OrderPageMain>
                               Text(
                                 snapshot.data![index]['service_name'],
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: RawatinColorTheme.black,
                                     fontFamily: "Arial Rounded"),
                               ),
@@ -399,14 +399,6 @@ class _OrderPageMainState extends State<OrderPageMain>
                                         orderId: snapshot.data![index]
                                             ['order_id'],
                                       ));
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .push(
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => OrderDetail(
-                                  //         orderId: snapshot.data![index]
-                                  //             ['order_id']),
-                                  //   ),
-                                  // );
                                 },
                                 child: const SizedBox(
                                   width: 50,
@@ -551,7 +543,7 @@ class _OrderPageMainState extends State<OrderPageMain>
                               Text(
                                 snapshot.data![index]['service_name'],
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: RawatinColorTheme.black,
                                     fontFamily: "Arial Rounded"),
                               ),
