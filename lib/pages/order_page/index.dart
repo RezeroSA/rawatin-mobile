@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rawatin/pages/buat_pesanan/index.dart';
+import 'package:rawatin/pages/buat_pesanan_darurat/index.dart';
+import 'package:rawatin/pages/detail_pesanan_selesai/index.dart';
+import 'package:rawatin/pages/detail_pesanan_selesai_darurat/index.dart';
 import 'package:rawatin/pages/order_detail/canceled.dart';
-import 'package:rawatin/pages/order_detail/index.dart';
 import 'package:rawatin/service/order.dart';
 import 'package:rawatin/utils/utils.dart';
 
@@ -240,7 +242,12 @@ class _OrderPageMainState extends State<OrderPageMain>
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Get.to(() => BuatPesanan());
+                                    if (order['service_name']
+                                        .contains('Darurat')) {
+                                      Get.to(() => BuatPesananDarurat());
+                                    } else {
+                                      Get.to(() => BuatPesanan());
+                                    }
                                   },
                                   child: const SizedBox(
                                     width: 50,
@@ -395,10 +402,19 @@ class _OrderPageMainState extends State<OrderPageMain>
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  Get.to(() => OrderDetail(
-                                        orderId: snapshot.data![index]
-                                            ['order_id'],
-                                      ));
+                                  if (snapshot.data![index]['service_name']
+                                      .contains('Darurat')) {
+                                    Get.to(() => DetailPesananSelesaiDarurat(
+                                          orderId: snapshot.data![index]
+                                              ['order_id'],
+                                        ));
+                                  } else {
+                                    print(snapshot.data![index]['order_id']);
+                                    Get.to(() => DetailPesananSelesai(
+                                          orderId: snapshot.data![index]
+                                              ['order_id'],
+                                        ));
+                                  }
                                 },
                                 child: const SizedBox(
                                   width: 50,

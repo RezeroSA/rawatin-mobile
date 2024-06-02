@@ -7,7 +7,7 @@ import 'package:rawatin/pages/change_language/index.dart';
 import 'package:rawatin/pages/edit_profile/index.dart';
 import 'package:rawatin/pages/informasi_aplikasi/index.dart';
 import 'package:rawatin/pages/order_page/index.dart';
-import 'package:rawatin/service/authentication.dart';
+import 'package:rawatin/service/Authentication.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -46,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage>
         name = res['name'];
         phone = res['phone'];
         email = res['email'];
-        avatar = res['avatar'];
+        avatar = res['avatar'] ?? '';
       });
     } else {
       setState(() {

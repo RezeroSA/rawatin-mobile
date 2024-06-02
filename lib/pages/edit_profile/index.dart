@@ -6,7 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rawatin/constraint/constraint.dart';
 import 'package:rawatin/pages/home/index.dart';
-import 'package:rawatin/service/authentication.dart';
+import 'package:rawatin/service/Authentication.dart';
 import 'package:rawatin/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
